@@ -3,17 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>파이썬 기초 마스터 · 3 챕터 학습 앱</title>
+<title>파이썬 기초 마스터 v4 · 3 챕터 · OX 퀴즈 · 직접 타이핑 연습</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
 <style>
 :root{
  --p:#4f46e5; --p2:#7c3aed; --p3:#06b6d4;
  --ink:#262837; --sub:#6b7280; --line:#e3e8f5;
  --bg:#eef2fc; --card:#fff; --soft:#f8f9ff;
- --ok:#16a34a; --okbg:#eafaf1; --okline:#bbf7d0;
- --no:#ef4444; --nobg:#fdeeef; --noline:#fecaca;
- --warn:#f59e0b; --warnbg:#fef3c7; --warnline:#fde68a;
- --codebg:#1e2233; --codefg:#d7def2; --codeline:#7a86a6;
+ --ok:#16a34a; --okbg:#eafaf1;
+ --no:#ef4444; --nobg:#fdeeef;
+ --codebg:#1e2233; --codefg:#d7def2;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -25,23 +24,24 @@ body{font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothi
 .hero .sub{font-size:16px;opacity:.95}
 .badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
 .badge{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);padding:4px 12px;border-radius:999px;font-size:13px;font-weight:600}
-.chapRow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:22px}
-.chapRPill{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);padding:8px 8px;border-radius:10px;font-size:13px;text-decoration:none;color:#fff;text-align:center}
-.chapRPill b{color:#fde68a}
 nav.sticky{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:10px 0}
-nav .navIn{max-width:980px;margin:0 auto;padding:0 16px;display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;align-items:center}
+nav .navIn{max-width:980px;margin:0 auto;padding:0 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .navBtn{font-family:inherit;border:1px solid #c7d2fe;background:#eef2ff;color:#4338ca;border-radius:10px;padding:8px 14px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
 .navBtn.ghost{background:#fff;color:#4f46e5}
-.progressBar{height:8px;width:160px;background:#e5e9f7;border-radius:999px;overflow:hidden}
+.progressBar{height:8px;width:200px;background:#e5e9f7;border-radius:999px;overflow:hidden}
 .progressBar i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#4f46e5,#06b6d4);border-radius:999px;transition:width .35s}
-section{margin-top:30px}
-.chapterHead{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 20px;margin-bottom:18px;box-shadow:0 2px 10px rgba(67,56,202,.06)}
+.chapNavLinks{display:flex;gap:6px;flex-wrap:wrap}
+section{margin-top:28px;display:block}
+.chapterHead{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 20px;margin-bottom:14px;box-shadow:0 2px 10px rgba(67,56,202,.06)}
 .chapterHead .num{width:48px;height:48px;font-size:20px;font-weight:800;color:#fff;background:linear-gradient(135deg,#4f46e5,#7c3aed);border-radius:12px;display:flex;align-items:center;justify-content:center}
 .chapterHead h2{font-size:22px;color:#3730a3}
 .chapterHead .tag{font-size:13px;color:var(--sub);margin-top:2px}
 .partTabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
 .partTab{font-family:inherit;border:2px solid var(--line);background:#fff;padding:9px 16px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;color:var(--ink)}
 .partTab.active{background:linear-gradient(90deg,#4f46e5,#7c3aed);color:#fff;border-color:transparent}
+/* 핵심: partPanel 숨김/표시 명시 */
+.partPanel{display:block}
+.partPanel.hide{display:none !important}
 .card{background:var(--card);border-radius:18px;box-shadow:0 4px 18px rgba(67,56,202,.08);padding:22px;margin-bottom:18px;border:1px solid var(--line)}
 .card h3{font-size:18px;color:#3730a3;margin-bottom:6px}
 .card p.lead{color:var(--sub);font-size:14px;margin-bottom:12px}
@@ -53,828 +53,698 @@ pre{margin:0;font-family:'D2Coding','JetBrains Mono',Consolas,monospace;font-siz
 .tips{margin-top:10px;padding:0;list-style:none}
 .tips li{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:8px 12px 8px 36px;position:relative;margin-bottom:6px;font-size:14px}
 .tips li::before{content:"💡";position:absolute;left:10px;top:8px}
-/* Editor */
-.editorWrap{background:var(--codebg);border-radius:14px;overflow:hidden;border:1px solid #2a3050;margin-top:10px}
-.editorHead{display:flex;justify-content:space-between;align-items:center;background:#161a2c;padding:9px 14px;color:#a8b1cf;font-size:13px}
+/* ── 직접 타이핑 연습기 (v4 핵심) ── */
+.typeExercise{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:18px;box-shadow:0 4px 18px rgba(67,56,202,.08)}
+.typeGoal{display:flex;align-items:flex-start;gap:12px;background:linear-gradient(90deg,#eef2ff,#ecfdf5);border:1px solid #c7d2fe;border-radius:14px;padding:14px 18px;margin-bottom:12px}
+.typeGoal .badge{background:linear-gradient(90deg,#4f46e5,#7c3aed);color:#fff;padding:5px 12px;border-radius:999px;font-size:13px;font-weight:700;flex:0 0 auto}
+.typeGoal .body{flex:1}
+.typeGoal h3{font-size:17px;color:#3730a3;margin-bottom:4px}
+.typeGoal p{font-size:14px;color:#374151}
+.typeGoal .labelWant{margin-top:8px;background:#1e2233;color:#4ade80;padding:8px 12px;border-radius:8px;font-family:'D2Coding','JetBrains Mono',Consolas,monospace;font-size:15px;display:inline-block}
+.editorWrap{background:var(--codebg);border-radius:14px;overflow:hidden;border:1px solid #2a3050}
+.editorHead{display:flex;justify-content:space-between;align-items:center;background:#161a2c;padding:10px 14px;color:#a8b1cf;font-size:13px;flex-wrap:wrap;gap:6px}
 .editorHead .dot{width:10px;height:10px;border-radius:50%;background:#fbbf24;display:inline-block;margin-right:6px}
-.editorHead button,.editorHead .runBtn{font-family:inherit;border:none;color:#fff;padding:8px 16px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px}
-.runBtn.runBtnGo{background:linear-gradient(90deg,#4f46e5,#06b6d4)}
-.runBtn.runBtnSwap{background:#475569}
-.editorHead .meta{font-size:12px;color:#7a86a6;margin-right:6px}
+.editorHead button{font-family:inherit;border:none;color:#fff;padding:9px 14px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px}
+.runBtnGo{background:linear-gradient(90deg,#4f46e5,#06b6d4) !important}
+.runBtnHint{background:#475569 !important}
+.runBtnReveal{background:#7c3aed !important}
+.runBtnNext{background:#16a34a !important}
 .editorHead button[disabled]{opacity:.5;cursor:not-allowed}
-textarea.codeArea{width:100%;min-height:120px;background:var(--codebg);color:var(--codefg);border:none;outline:none;padding:14px 18px;font-family:'D2Coding','JetBrains Mono',Consolas,monospace;font-size:15px;line-height:1.7;resize:vertical}
+.editorHead .meta{font-size:12px;color:#7a86a6;margin-right:6px}
+textarea.codeArea{width:100%;min-height:130px;background:var(--codebg);color:var(--codefg);border:none;outline:none;padding:14px 18px;font-family:'D2Coding','JetBrains Mono',Consolas,monospace;font-size:15px;line-height:1.7;resize:vertical;tab-size:2}
+textarea.codeArea::placeholder{color:#525a7a}
 .outBox{background:#0f1322;color:#a7e9af;padding:14px 18px;font-family:'D2Coding','JetBrains Mono',Consolas,monospace;font-size:14px;min-height:48px;border-top:1px solid #2a3050;white-space:pre-wrap;word-break:break-all}
-.outBox .err{color:#fca5a5}
+.outBox.err{color:#fca5a5}
 .outBox .okmsg{color:#a7e9af;font-weight:700;margin-right:8px}
-.exPager{display:inline-flex;align-items:center;gap:6px;background:#1e2233;color:#a8b1cf;border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600;margin-right:10px;border:1px solid #2a3050}
-.exPager b{color:#fbbf24}
-.exPager .left{background:transparent;color:#a8b1cf;border:1px solid #2a3050;padding:3px 8px;border-radius:6px;cursor:pointer;font-size:12px}
-.exPager .right{background:transparent;color:#a8b1cf;border:1px solid #2a3050;padding:3px 8px;border-radius:6px;cursor:pointer;font-size:12px}
+.outBox.matched{background:#0a1f15}
+.pyLoading{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;padding:22px;border-radius:14px;margin-bottom:14px;display:flex;align-items:center;gap:14px;font-weight:600}
 .loader{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.pyLoading{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;padding:22px;border-radius:14px;margin-bottom:14px;display:flex;align-items:center;gap:14px;font-weight:600}
-/* Quiz */
-.quizTop{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap}
-.lb{font-size:14px;color:var(--sub);margin:10px 0 6px}
-.qtext{font-size:15.5px;margin-bottom:10px}
-.ansInput{width:100%;padding:12px 14px;font-size:16px;border:2px solid var(--line);border-radius:12px;font-family:inherit}
+/* ── 연습문제 / OX 공통 ── */
+.qBar{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.ansInput{width:100%;padding:11px 14px;font-size:16px;border:2px solid var(--line);border-radius:12px;font-family:inherit;background:#fff}
 .ansInput:focus{outline:none;border-color:#818cf8}
 .btn{display:inline-block;border:none;cursor:pointer;font-family:inherit;font-weight:700;padding:11px 20px;border-radius:12px;font-size:15px;transition:.15s}
 .btn.go{background:linear-gradient(90deg,#4f46e5,#7c3aed);color:#fff}
 .btn:active{transform:scale(.97)}
-.fb{border-radius:12px;padding:14px 16px;margin-top:12px;font-size:15px;display:none}
+.fb{border-radius:12px;padding:13px 15px;margin-top:11px;font-size:15px;display:none}
 .fb.show{display:block;animation:fade .25s}
-.fb.ok{background:var(--okbg);border:1px solid #84e2ad}
-.fb.no{background:var(--nobg);border:1px solid #f8b4b6}
-.fb .head{font-weight:800;font-size:16px;margin-bottom:6px}
-.fb .explain{margin-top:8px;background:rgba(255,255,255,.78);border-radius:8px;padding:9px 11px;font-size:14px}
+.fb.ok{background:var(--okbg);border:1px solid #bbf7d0}
+.fb.no{background:var(--nobg);border:1px solid #fecaca}
+.fb .head{font-weight:800;font-size:16px;margin-bottom:5px}
+.fb .explain{margin-top:8px;background:rgba(255,255,255,.78);border-radius:8px;padding:8px 11px;font-size:14px}
 .fb .ansLine{font-size:14px;color:var(--sub);margin-top:6px}
 @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1}}
 .diffBadge{display:inline-block;font-size:12px;padding:2px 10px;border-radius:999px;font-weight:700;margin-left:6px}
 .diffBadge.easy{background:#dcfce7;color:#15803d}
 .diffBadge.hard{background:#fee2e2;color:#b91c1c}
-/* End */
+/* OX */
+.oxCol{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.oxCard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
+.oxChoiceRow{display:flex;gap:8px;margin-top:4px}
+.oxOXBtn{flex:1;font-family:inherit;border:none;color:#fff;padding:10px;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px}
+.oxOXBtn.O{background:linear-gradient(90deg,#16a34a,#22c55e)}
+.oxOXBtn.X{background:linear-gradient(90deg,#ef4444,#dc2626)}
+.oxOXBtn:disabled{opacity:.55;cursor:not-allowed}
+.oxName{font-family:'D2Coding','JetBrains Mono',Consolas,monospace;background:#eef2ff;color:#4338ca;padding:2px 8px;border-radius:6px;font-size:14.5px}
+/* 결과 차트 */
 .endCard{text-align:center;padding:30px 20px}
 .endCard .big{font-size:56px}
 .endCard .score{font-size:30px;font-weight:800;color:#3730a3;margin:8px 0}
 .endCard .msg{color:var(--sub);font-size:16px;margin-bottom:18px}
-.endChartBox{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:18px;margin:18px 0}
-.endChartBox h4{font-size:16px;color:#3730a3;margin-bottom:6px;text-align:left}
-.endChartBox .leg{font-size:13px;color:var(--sub);text-align:left;margin-bottom:10px}
-.endBtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;align-items:center}
-footer{margin-top:40px;text-align:center;color:var(--sub);font-size:13px}
+.endChartBox{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:18px;margin:18px 0;text-align:left}
+footer{margin-top:40px;text-align:center;color:var(--sub);font-size:13px;padding-bottom:20px}
 @media(max-width:620px){
  .hero h1{font-size:24px}
  .preRow{grid-template-columns:1fr}
  .preRow .arrow{display:none}
  pre{font-size:12.5px}
- .chapRow{grid-template-columns:1fr}
- .progressBar{width:100%}
+ .oxCol{grid-template-columns:1fr}
+ .progressBar{width:140px}
 }
 </style>
 </head>
 <body>
 <header class="hero">
  <div class="snake">🐍</div>
- <h1>파이썬 기초 마스터</h1>
- <div class="sub">초등 6학년 · <b>print 구문 · 연산자 · 변수</b> 3 챕터 학습 앱</div>
+ <h1>파이썬 기초 마스터 v4</h1>
+ <div class="sub">초등 6학년 · print · 연산자 · 변수 · <span style="background:#fbbf24;color:#1e2233;padding:3px 10px;border-radius:999px;font-weight:800;font-size:14px">⭐ 직접 타이핑 연습</span></div>
  <div class="badges">
  <span class="badge">📖 3 챕터</span>
- <span class="badge">🎮 연습하기 챕터당 10</span>
- <span class="badge">📝 주관식 연습문제 챕터당 20</span>
+ <span class="badge">🎮 직접 타이핑 챕터당 10</span>
+ <span class="badge">📝 주관식 문제 챕터당 20</span>
+ <span class="badge">⚖️ OX 챕터당 20</span>
  <span class="badge">▶️ 실제 파이썬 실행</span>
- <span class="badge">📊 영역별 분석</span>
- </div>
- <div class="chapRow">
- <a class="chapRPill" href="#ch1"><b>① print 구문</b><br>연습 10 · 문제 20</a>
- <a class="chapRPill" href="#ch2"><b>② 연산자</b><br>연습 10 · 문제 20</a>
- <a class="chapRPill" href="#ch3"><b>③ 변수</b><br>연습 10 · 문제 20</a>
  </div>
 </header>
-
 <nav class="sticky">
  <div class="navIn">
- <div style="display:flex;gap:6px;flex-wrap:wrap">
+ <div class="chapNavLinks">
  <a class="navBtn ghost" href="#ch1">① print</a>
  <a class="navBtn ghost" href="#ch2">② 연산자</a>
  <a class="navBtn ghost" href="#ch3">③ 변수</a>
  </div>
  <div style="display:flex;align-items:center;gap:10px">
  <div class="progressBar"><i id="pbar"></i></div>
- <div style="font-size:13px;color:var(--sub);white-space:nowrap" id="navCount">0/60 완료</div>
+ <div style="font-size:13px;color:var(--sub);white-space:nowrap" id="navCount">0/80 완료</div>
  </div>
  </div>
 </nav>
-
-<div class="wrap" id="mainWrap">
+<div class="wrap">
  <div id="pyLoadingBar" class="pyLoading">
  <span class="loader"></span>
- <span>파이썬 엔진(Pyodide)을 처음에 한 번만 불러오는 중이에요... (보통 5~15초)</span>
+ <span>파이썬 엔진(Pyodide)을 처음에 한 번만 불러 오는 중... (보통 5~15초)</span>
  </div>
-<!-- ================= CHAPTER 1: PRINT ================= -->
-<section id="ch1">
- <div class="chapterHead">
- <div class="num">①</div>
- <div>
- <h2>Chapter 1 · print 구문</h2>
- <div class="tag">화면에 글자·숫자·계산 결과를 출력하는 방법을 배워요</div>
- </div>
- </div>
-
- <div class="partTabs" data-chap="1">
- <button class="partTab active" data-part="concept">📖 개념학습</button>
- <button class="partTab" data-part="practice">🎮 연습하기 10</button>
- <button class="partTab" data-part="quiz">📝 연습문제 20</button>
- </div>
-
- <div class="partPanel" data-chap="1" data-part="concept">
- <div class="card">
- <h3>1-1. print() 는 화면에 보여 주는 명령어</h3>
- <p class="lead">print() 안에 출력하고 싶은 내용을 넣으면 화면에 보여 줘요. <b>따옴표(" ") 안</b>은 그대로 출력되고, <b>숫자</b>는 따옴표 없이 써요.</p>
- <div class="preRow"><pre class="code">print("안녕")</pre><div class="arrow">→</div><pre class="result">안녕</pre></div>
- <div class="preRow"><pre class="code">print(7)</pre><div class="arrow">→</div><pre class="result">7</pre></div>
- <div class="preRow"><pre class="code">print(1, 2, 3)</pre><div class="arrow">→</div><pre class="result">1 2 3</pre></div>
- <ul class="tips">
- <li>쉼표(,)로 여러 개를 넣으면 <b>공백</b>으로 구분돼요.</li>
- <li>print는 출력한 뒤 <b>자동으로 줄을 바꿔요</b>.</li>
- <li>따옴표는 작은따옴표(' ')도 똑같이 사용할 수 있어요!</li>
- </ul>
- </div>
- <div class="card">
- <h3>1-2. sep와 end 로 출력 모양 바꾸기</h3>
- <p class="lead"><b>sep</b> 은 값들 사이의 구분자, <b>end</b> 는 마지막에 붙는 글자예요.</p>
- <div class="preRow"><pre class="code">print("a", "b", sep="-")</pre><div class="arrow">→</div><pre class="result">a-b</pre></div>
- <div class="preRow"><pre class="code">print("안녕", end="!")</pre><div class="arrow">→</div><pre class="result">안녕!</pre></div>
- <ul class="tips"><li>sep 기본값은 공백, end 기본값은 줄바꿈(\n)이에요.</li></ul>
- </div>
- </div>
-
- <div class="partPanel" data-chap="1" data-part="practice" hidden>
- <div class="card">
- <h3>🎮 직접 파이썬 코드를 작성해 보고 실행해 보세요!</h3>
- <p class="lead">아래 코드를 자유롭게 수정해도 돼요. <b>▶ 실행</b> 버튼을 누르면 결과가 그 아래에 나와요. 예제 바꾸기로 <b>10개의 연습 예제</b>를 자유롭게 돌려볼 수 있어요.</p>
- <div class="editorWrap">
- <div class="editorHead">
- <span><span class="dot"></span>print 연습</span>
- <div>
- <span class="exPager">
- <button class="left" data-ex-prev="1">◀</button>
- 예제 <b id="exLabel1"><span>1</span>/10</b>
- <button class="right" data-ex-next="1">▶</button>
- </span>
- <span class="meta" id="exHint1">기본 코드 · 자유롭게 수정해 보세요</span>
- <button class="runBtn runBtnGo" data-run="1">▶ 실행</button>
- <button class="runBtn runBtnSwap" data-swap="1">🔄 예제 바꾸기</button>
- </div>
- </div>
- <textarea class="codeArea" id="ed1"></textarea>
- <div class="outBox" id="out1">▶ 실행 버튼을 눌러 결과를 확인해 보세요.</div>
- </div>
- <ul class="tips" style="margin-top:12px">
- <li><b>미션 1:</b> print(2024) 가 출력되도록 바꿔 보세요.</li>
- <li><b>미션 2:</b> "철수", "영희", "민호" 를 쉼표로 구분해 한 줄로 출력해 보세요.</li>
- <li><b>미션 3:</b> end="!" 를 사용해 print("Hi") 의 마지막에 ! 가 붙게 해 보세요.</li>
- </ul>
- </div>
- </div>
-
- <div class="partPanel" data-chap="1" data-part="quiz" hidden></div>
-</section>
-
-<!-- ================= CHAPTER 2: OPERATOR ================= -->
-<section id="ch2">
- <div class="chapterHead">
- <div class="num">②</div>
- <div>
- <h2>Chapter 2 · 연산자</h2>
- <div class="tag">덧셈·뺄셈부터 나눗셈 3종류(/ · // · %)까지!</div>
- </div>
- </div>
-
- <div class="partTabs" data-chap="2">
- <button class="partTab active" data-part="concept">📖 개념학습</button>
- <button class="partTab" data-part="practice">🎮 연습하기 10</button>
- <button class="partTab" data-part="quiz">📝 연습문제 20</button>
- </div>
-
- <div class="partPanel" data-chap="2" data-part="concept">
- <div class="card">
- <h3>2-1. 사칙연산과 거듭제곱</h3>
- <p class="lead">파이썬은 계산도 할 수 있어요. <b>+, -, *</b> 는 수학 시간에 배운 그대로예요.</p>
- <div class="preRow"><pre class="code">print(7 + 2)</pre><div class="arrow">→</div><pre class="result">9</pre></div>
- <div class="preRow"><pre class="code">print(7 * 2)</pre><div class="arrow">→</div><pre class="result">14</pre></div>
- <div class="preRow"><pre class="code">print(2 ** 3)</pre><div class="arrow">→</div><pre class="result">8</pre></div>
- <ul class="tips"><li><b>**</b> 는 거듭제곱이에요. 2**3 = 2×2×2 = 8</li></ul>
- </div>
- <div class="card">
- <h3>2-2. 나누기 3종류 — /, //, %</h3>
- <p class="lead">나누기는 3가지! <b>/</b> 는 언제나 소수, <b>//</b> 는 몫, <b>%</b> 는 나머지예요.</p>
- <div class="preRow"><pre class="code">print(7 / 2)</pre><div class="arrow">→</div><pre class="result">3.5</pre></div>
- <div class="preRow"><pre class="code">print(7 // 2)</pre><div class="arrow">→</div><pre class="result">3</pre></div>
- <div class="preRow"><pre class="code">print(7 % 2)</pre><div class="arrow">→</div><pre class="result">1</pre></div>
- </div>
- <div class="card">
- <h3>2-3. 계산 순서 (괄호 → 거듭제곱 → 곱셈 · 나눗셈 → 덧셈 · 뺄셈)</h3>
- <p class="lead"><b>괄호가 제일 먼저!</b></p>
- <div class="preRow"><pre class="code">print(2 + 3 * 4)</pre><div class="arrow">→</div><pre class="result">14</pre></div>
- <div class="preRow"><pre class="code">print((2 + 3) * 4)</pre><div class="arrow">→</div><pre class="result">20</pre></div>
- </div>
- </div>
-
- <div class="partPanel" data-chap="2" data-part="practice" hidden>
- <div class="card">
- <h3>🎮 연산자 연습 — 직접 계산해 보세요!</h3>
- <p class="lead">아래 코드를 자유롭게 수정하고 <b>▶ 실행</b> 으로 결과를 확인해요. 예제 바꾸기로 10개 모두 돌려볼 수 있어요.</p>
- <div class="editorWrap">
- <div class="editorHead">
- <span><span class="dot"></span>연산자 연습</span>
- <div>
- <span class="exPager">
- <button class="left" data-ex-prev="2">◀</button>
- 예제 <b id="exLabel2"><span>1</span>/10</b>
- <button class="right" data-ex-next="2">▶</button>
- </span>
- <span class="meta" id="exHint2">7÷2 의 세 가지 결과</span>
- <button class="runBtn runBtnGo" data-run="2">▶ 실행</button>
- <button class="runBtn runBtnSwap" data-swap="2">🔄 예제 바꾸기</button>
- </div>
- </div>
- <textarea class="codeArea" id="ed2"></textarea>
- <div class="outBox" id="out2">▶ 실행 버튼을 눌러 결과를 확인해 보세요.</div>
- </div>
- <ul class="tips" style="margin-top:12px">
- <li><b>미션 1:</b> 10 ÷ 3 의 몫과 나머지를 출력해 보세요.</li>
- <li><b>미션 2:</b> (5 + 3) × 2 의 결과를 출력해 보세요. (괄호의 힘!)</li>
- <li><b>미션 3:</b> 4 의 3제곱(4×4×4) 을 ** 연산자로 출력해 보세요.</li>
- </ul>
- </div>
- </div>
-
- <div class="partPanel" data-chap="2" data-part="quiz" hidden></div>
-</section>
-
-<!-- ================= CHAPTER 3: VARIABLE ================= -->
-<section id="ch3">
- <div class="chapterHead">
- <div class="num">③</div>
- <div>
- <h2>Chapter 3 · 변수</h2>
- <div class="tag">값을 담는 상자! 이름표 붙여 두기</div>
- </div>
- </div>
-
- <div class="partTabs" data-chap="3">
- <button class="partTab active" data-part="concept">📖 개념학습</button>
- <button class="partTab" data-part="practice">🎮 연습하기 10</button>
- <button class="partTab" data-part="quiz">📝 연습문제 20</button>
- </div>
-
- <div class="partPanel" data-chap="3" data-part="concept">
- <div class="card">
- <h3>3-1. 변수 = 값을 담는 상자</h3>
- <p class="lead"><b>변수</b> 는 값을 담아 두었다가 이름으로 다시 꺼내 쓰는 상자예요. <b>x = 7</b> 은 "x 라는 이름표가 붙은 상자에 7 을 넣어라" 라는 뜻!</p>
- <div class="preRow"><pre class="code">x = 7
-print(x)</pre><div class="arrow">→</div><pre class="result">7</pre></div>
- <div class="preRow"><pre class="code">name = "코딩"
-print(name)</pre><div class="arrow">→</div><pre class="result">코딩</pre></div>
- <ul class="tips">
- <li><b>=</b> 는 "같다" 가 아니에요! "오른쪽 값을 왼쪽에 넣어라" 라는 뜻!</li>
- <li>변수 이름은 <b>영어 · 숫자 · _(밑줄)</b> 로 만들고, 숫자로 시작하면 안 돼요.</li>
- </ul>
- </div>
- <div class="card">
- <h3>3-2. 변수끼리 계산하기</h3>
- <p class="lead">여러 변수를 만들고 연산자로 계산할 수 있어요.</p>
- <div class="preRow"><pre class="code">x = 3
-y = 5
-print(x + y)</pre><div class="arrow">→</div><pre class="result">8</pre></div>
- <div class="preRow"><pre class="code">name = "코딩"
-print(name * 2)</pre><div class="arrow">→</div><pre class="result">코딩코딩</pre></div>
- </div>
- <div class="card">
- <h3>3-3. 변수 값 바꾸기</h3>
- <p class="lead">같은 변수에 새 값을 넣으면 <b>기존 값은 잊혀져요</b>.</p>
- <div class="preRow"><pre class="code">a = 10
-a = a + 5
-print(a)</pre><div class="arrow">→</div><pre class="result">15</pre></div>
- <div class="preRow"><pre class="code">x = 7
-x = x * 2
-print(x)</pre><div class="arrow">→</div><pre class="result">14</pre></div>
- </div>
- </div>
-
- <div class="partPanel" data-chap="3" data-part="practice" hidden>
- <div class="card">
- <h3>🎮 변수 연습 — 직접 상자를 만들어 보세요!</h3>
- <p class="lead">변수를 자유롭게 만들어 보고 <b>▶ 실행</b> 으로 결과를 확인해요. 예제 바꾸기로 10개 모두 돌려볼 수 있어요.</p>
- <div class="editorWrap">
- <div class="editorHead">
- <span><span class="dot"></span>변수 연습</span>
- <div>
- <span class="exPager">
- <button class="left" data-ex-prev="3">◀</button>
- 예제 <b id="exLabel3"><span>1</span>/10</b>
- <button class="right" data-ex-next="3">▶</button>
- </span>
- <span class="meta" id="exHint3">이름표를 붙여 보자</span>
- <button class="runBtn runBtnGo" data-run="3">▶ 실행</button>
- <button class="runBtn runBtnSwap" data-swap="3">🔄 예제 바꾸기</button>
- </div>
- </div>
- <textarea class="codeArea" id="ed3"></textarea>
- <div class="outBox" id="out3">▶ 실행 버튼을 눌러 결과를 확인해 보세요.</div>
- </div>
- <ul class="tips" style="margin-top:12px">
- <li><b>미션 1:</b> age = 13 같이 자기 나이를 변수에 넣어 출력해 보세요.</li>
- <li><b>미션 2:</b> x = 5 · y = 7 두 변수의 합을 출력해 보세요.</li>
- <li><b>미션 3:</b> a = 10 · a = a * 3 으로 값을 바꾸고 출력해 보세요.</li>
- </ul>
- </div>
- </div>
-
- <div class="partPanel" data-chap="3" data-part="quiz" hidden></div>
-</section>
-
-<section id="resultsSection" hidden>
- <div class="card endCard">
- <div class="big">🏁</div>
- <div class="score" id="finalScore"></div>
- <div class="msg" id="finalMsg"></div>
- <div class="endChartBox">
- <h4>📊 영역별 분석</h4>
- <div class="leg" id="chartLegend">챕터와 난이도별로 어디가 잘 안 되는지 보여줘요. 막대가 낮을수록 그 부분이 약해요!</div>
- <svg id="barChart" viewBox="0 0 760 320" preserveAspectRatio="xMidYMid meet" style="width:100%;max-width:760px;height:auto;background:#fff;border-radius:10px;border:1px solid var(--line)"></svg>
- </div>
- <div class="endChartBox">
- <h4>💪 다음에 집중하면 좋을 부분</h4>
- <div id="weakAreas" style="text-align:left;font-size:14px;line-height:1.9"></div>
- </div>
- <div class="endBtns">
- <button class="btn go" id="restartBtn">🔄 다시 풀기</button>
- <a class="navBtn ghost" href="#mainWrap" style="text-decoration:none">⬆ 위로</a>
- </div>
- </div>
-</section>
-
+ <div id="chapContainer"></div>
 </div>
-<footer>🐍 파이썬 마스터 학습 앱 · 초등 6학년용 print · 연산자 · 변수 · 실제 파이썬(Pyodide) 실행 기반 · 외부 서버 없이 브라우저 안에서만 채점합니다.</footer>
+<footer>🐍 파이썬 마스터 v4 · 초등 6학년용 · 직접 타이핑이 학습의 핵심 🔑 · 모든 채점은 브라우저 안에서</footer>
 <script>
 "use strict";
 
 /* ============================================================
-   1) 연습하기 예제 (챕터당 정확히 10개 — 모두 실제 실행 검증 완료)
+   데이터: 3 챕터 통합 — 개념 예시, 직접 타이핑 예제, 주관식 문제, OX
    ============================================================ */
-const PRACTICE = {
- 1: [
- 'print("안녕, 파이썬!")',
- 'print(1, 2, 3)',
- 'print("철수", "영희", sep=" & ")',
- 'print("Hello", end="!")',
- 'print(2024)',
- 'print("사", "랑", sep="-")',
- 'print("Hi")\nprint("Bye")',
- 'print("가", "나", "다", sep="-")',
- 'print(10, 20, 30)',
- 'print("끝", end="🎉")'
- ],
- 2: [
- 'print("7 / 2 =", 7 / 2)\nprint("7 // 2 =", 7 // 2)\nprint("7 % 2 =", 7 % 2)',
- 'print("10 / 4 =", 10 / 4)\nprint("10 // 4 =", 10 // 4)\nprint("10 % 4 =", 10 % 4)',
- 'print("(5+3)*2 =", (5+3)*2)',
- 'print("4 ** 3 =", 4 ** 3)',
- 'print("2 + 3 * 4 =", 2 + 3 * 4)',
- 'print("(2 + 3) * 4 =", (2 + 3) * 4)',
- 'print("100 - 50 =", 100 - 50)',
- 'print("3 + 5 * 2 =", 3 + 5 * 2)',
- 'print("100 // 7 =", 100 // 7)\nprint("100 % 7 =", 100 % 7)',
- 'print("3.14 * 2 =", 3.14 * 2)'
- ],
- 3: [
- 'name = "파이썬"\nscore = 95\nprint("이름:", name)\nprint("점수:", score)',
- 'age = 13\nprint("나는", age, "살")',
- 'x = 5\ny = 7\nprint("x+y =", x + y)',
- 'a = 10\na = a * 3\nprint("a =", a)',
- 'name = "코딩"\nprint(name * 3)',
- 'price = 1000\ncount = 3\nprint("총 가격:", price * count)',
- 'a = 7\nb = a * 2\nc = b + 1\nprint(c)',
- 'counter = 0\ncounter = counter + 1\ncounter = counter + 1\nprint(counter)',
- 'x = 10\nx = x - 4\nprint(x)',
- 's = "사과"\nprint(s, s, s, sep="-")'
- ]
-};
-const PRACTICE_HINT = {
- 1: [
- '기본 코드 · 자유롭게 수정해 보세요',
- '쉼표로 여러 값 출력',
- 'sep 로 구분자 바꾸기',
- 'end 로 마지막 글자 바꾸기',
- '숫자 출력',
- 'sep "-" 사용하기',
- 'print 두 번 = 두 줄로 출력',
- 'sep 으로 가-나-다 연결',
- '숫자 여러 개 출력',
- 'end 로 이모지 붙이기'
- ],
- 2: [
- '7÷2 의 세 가지 결과',
- '10÷4 의 세 가지 결과',
- '(5+3)×2 의 결과',
- '4 의 3제곱',
- '2 + 3 × 4 의 결과',
- '(2+3)×4 의 결과',
- '뺄셈 연습',
- '곱셈이 덧셈보다 먼저!',
- '100÷7 의 몫과 나머지',
- '소수 곱셈'
- ],
- 3: [
- '이름과 점수 변수',
- 'age 변수',
- '두 변수 합',
- '변수 값 바꾸기',
- '문자열 × 3',
- '가격 × 개수',
- '변수를 변수로 계산',
- 'counter 증가',
- '변수 값 빼기',
- '문자열을 sep 로 결합'
- ]
-};
-const exIdx = { 1:0, 2:0, 3:0 };
 
-/* ============================================================
-   2) 연습문제 (챕터당 정확히 20개 — 쉬움 10 + 어려움 10)
-   ============================================================ */
-// 빌더 (id, diff, prompthtml, [accept array], explain)
-function Q(id, diff, promptHtml, accepts, explain){
- return { id:id, diff:diff, q:promptHtml, accept:accepts, explain:explain };
-}
-const PRINT_CODE = (s) => '<pre class="code">' + s.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</pre>';
+// ── 직접 타이핑 연습 (챕터당 10) ──
+// 각 예제: task = 목표 출력, hint = 단계별 힌트(2단계), answer = 정답 코드, starter = 빈 슬라이스
+// 핵심: starter 에는 정답 코드가 미리 들어가 있지 않음
+const TYPE_EX = {
+ 1: [
+ { task:'안녕', hintA:'print 라는 명령을 사용해 보세요. 글자를 출력할 때는 양쪽에 " 기호를 붙여요.', hintB:'print 와 ( 와 " 와 안녕 과 " 와 ) 를 순서대로 써 보세요.',
+ answer:'print("안녕")', starter:'# 여기에 코드를 직접 입력해 보세요\n' },
+ { task:'7', hintA:'숫자 7 을 그대로 출력해 보세요. 숫자는 따옴표 없이 써요.', hintB:'print(7) 처럼 괄호 안에 숫자만 넣어 주면 돼요.',
+ answer:'print(7)', starter:'# print( 숫자 ) 형태로 입력해 보세요\n' },
+ { task:'1 2 3', hintA:'여러 값을 한 줄에 출력할 때는 쉼표(,) 로 구분해요.', hintB:'print(1, 2, 3) 처럼 쉼표로 나란히 써 보세요.',
+ answer:'print(1, 2, 3)', starter:'# 쉼표로 값을 나란히 출력해 보세요\n' },
+ { task:'가-나', hintA:'두 글자를 하이픈(-) 으로 연결해 출력해요. sep 옵션이 필요해요.', hintB:'출력 옵션은 print(..., sep="-") 처럼 안쪽에 적어요.',
+ answer:'print("가", "나", sep="-")', starter:'# sep 옵션으로 두 글자를 - 로 연결해 보세요\n' },
+ { task:'안녕!', hintA:'print 는 출력 뒤에 자동으로 줄바꿈을 해요. 줄바꿈 대신 ! 를 붙이려면 end 옵션!', hintB:'print("안녕", end="!") 처럼 마지막 글자를 지정해 줘요.',
+ answer:'print("안녕", end="!")', starter:'# end 옵션으로 줄바꿈 대신 ! 를 붙여 보세요\n' },
+ { task:'a+b+c', hintA:'세 글자를 + 로 연결해 출력해요.', hintB:'sep 옵션을 사용하면 돼요.',
+ answer:'print("a", "b", "c", sep="+")', starter:'# sep 옵션을 활용해 보세요\n' },
+ { task:'파이썬공부', hintA:'두 글자를 이어 붙여 출력해요. 문자열끼리는 + 로 결합!', hintB:'print("파이썬" + "공부") 처럼 + 로 글자를 합쳐요.',
+ answer:'print("파이썬" + "공부")', starter:'# 두 글자를 + 로 합쳐 보세요\n' },
+ { task:'안녕안녕', hintA:'같은 글자를 두 번 반복해 출력해요. 문자열 × 숫자!', hintB:'문자열에 * 2 를 하면 글자가 두 번 반복돼요.',
+ answer:'print("안녕" * 2)', starter:'# 글자를 2번 반복해 보세요\n' },
+ { task:'Happy🎉Birthday!', hintA:'출력은 Hi 가 아니라 두 글자와 🎉 그리고 ! 가 모두 보여야 해요.', hintB:'print("Happy", "🎉", "Birthday", sep="") 와 print(... , end="!") 두 개를 써 보세요.',
+ answer:'print("Happy", end="")\nprint("🎉", end="")\nprint("Birthday!")', starter:'# 3줄에 나눠 출력해 보세요\n' },
+ { task:'Bye', hintA:'숫자도 출력할 수 있어요.', hintB:'print(2024) 처럼 숫자를 그대로 출력!',
+ answer:'print("Bye")', starter:'# Bye 를 출력해 보세요\n' }
+ ],
+ 2: [
+ { task:'9', hintA:'5 + 4 를 출력해 보세요.', hintB:'print(5 + 4) 는 숫자 계산 결과를 출력해요.',
+ answer:'print(5 + 4)', starter:'# 숫자 계산을 출력해 보세요\n' },
+ { task:'2.5', hintA:'10 ÷ 4 를 출력해 보세요. / 는 항상 소수!', hintB:'print(10 / 4) 는 2.5 가 나와요.',
+ answer:'print(10 / 4)', starter:'# / 연산자(나누기)로 계산해 보세요\n' },
+ { task:'3', hintA:'7 ÷ 2 의 몫을 출력해 보세요.', hintB:'// 는 몫을 구해요. 7//2 = 3',
+ answer:'print(7 // 2)', starter:'# // 연산자를 사용해 보세요\n' },
+ { task:'1', hintA:'7 ÷ 2 의 나머지를 출력해 보세요.', hintB:'% 연산자는 나머지를 구해요.',
+ answer:'print(7 % 2)', starter:'# % 연산자를 사용해 보세요\n' },
+ { task:'16', hintA:'4 의 2제곱을 출력해 보세요.', hintB:'거듭제곱은 ** 연산자. 4**2 = 16',
+ answer:'print(4 ** 2)', starter:'# 거듭제곱 ** 를 사용해 보세요\n' },
+ { task:'20', hintA:'(2 + 3) × 4 를 계산해 보세요. 곱셈이 덧셈보다 먼저!', hintB:'괄호로 묶으면 (2+3) 가 먼저 계산돼요.',
+ answer:'print((2 + 3) * 4)', starter:'# 괄호를 활용해 보세요\n' },
+ { task:'14', hintA:'2 + 3 × 4 를 계산해 보세요.', hintB:'곱셈이 먼저! 3×4=12, 2+12=14',
+ answer:'print(2 + 3 * 4)', starter:'# 곱셈이 먼저 계산되도록 작성해 보세요\n' },
+ { task:'6', hintA:'100 // 7 의 결과를 출력해 보세요.', hintB:'// 는 몫. 100÷7 = 14···2 → 몫은 14',
+ answer:'print(100 // 7 // 2)', starter:'# // 연산자를 두 번 활용해 보세요 (100 먼저 7 로, 그 다음 2 로)\n' },
+ { task:'32', hintA:'2 의 5제곱을 출력해 보세요.', hintB:'** 5 는 거듭제곱. 2**5 = 32',
+ answer:'print(2 ** 5)', starter:'# 2 의 5제곱을 출력해 보세요\n' },
+ { task:'100', hintA:'10 × 10 을 출력해 보세요!', hintB:'print(10 * 10)',
+ answer:'print(10 * 10)', starter:'# 간단한 곱셈 출력해 보기\n' }
+ ],
+ 3: [
+ { task:'코딩', hintA:'name 이라는 변수에 "코딩" 을 담아 보세요.', hintB:'name = "코딩" 처럼 변수에 값을 담고 print(name) 으로 출력해요.',
+ answer:'name = "코딩"\nprint(name)', starter:'# 변수에 글자를 담아 출력해 보세요\n' },
+ { task:'13', hintA:'age 라는 변수에 자기 나이 13 을 담아 보세요.', hintB:'age = 13 → print(age)',
+ answer:'age = 13\nprint(age)', starter:'# 숫자 변수를 만들어 출력해 보세요\n' },
+ { task:'12', hintA:'x=5, y=7 의 합을 출력해 보세요.', hintB:'print(x + y) 로 변수끼리 더해요.',
+ answer:'x = 5\ny = 7\nprint(x + y)', starter:'# 두 변수를 더해 보세요\n' },
+ { task:'30', hintA:'a 변수를 10 으로 시작해서 a = a * 3 으로 바꾸고 출력해 보세요.', hintB:'a = 10 → a = a * 3 → print(a) 는 30',
+ answer:'a = 10\na = a * 3\nprint(a)', starter:'# 변수의 값을 바꿔서 출력해 보세요\n' },
+ { task:'코딩코딩코딩', hintA:'변수에 "코딩" 을 담아 3 번 반복 출력해 보세요.', hintB:'s = "코딩" → print(s * 3)',
+ answer:'s = "코딩"\nprint(s * 3)', starter:'# 변수를 활용해 글자를 반복 출력해 보세요\n' },
+ { task:'3000', hintA:'price = 1000, count = 3 일 때 총 가격을 출력해 보세요.', hintB:'print(price * count)',
+ answer:'price = 1000\ncount = 3\nprint(price * count)', starter:'# 두 변수를 곱해 보세요\n' },
+ { task:'15', hintA:'a=7, b=a*2, c=b+1 일 때 c 를 출력해 보세요.', hintB:'a=7 → b=14 → c=15 → print(c)',
+ answer:'a = 7\nb = a * 2\nc = b + 1\nprint(c)', starter:'# 변수를 변수로 계산해 보세요\n' },
+ { task:'5', hintA:'x = 10, x = x - 5 일 때 최종 x 를 출력해 보세요.', hintB:'10 − 5 = 5',
+ answer:'x = 10\nx = x - 5\nprint(x)', starter:'# 변수 값을 줄여서 출력해 보세요\n' },
+ { task:'사과-사과-사과', hintA:'변수에 "사과" 를 담아 sep="-" 로 출력해 보세요.', hintB:'s = "사과" → print(s, s, s, sep="-")',
+ answer:'s = "사과"\nprint(s, s, s, sep="-")', starter:'# 변수와 sep 옵션을 함께 사용해 보세요\n' },
+ { task:'Banana', hintA:'f 라는 변수에 "Banana" 를 담아 출력해 보세요.', hintB:'f = "Banana"; print(f)',
+ answer:'f = "Banana"\nprint(f)', starter:'# 글자 변수를 만들어 출력해 보세요\n' }
+ ]
+};
+
+// ── 주관식 연습문제 (챕터당 20 — 모든 답 사전 python3 검증) ──
+function Q(id, diff, promptHtml, accepts, explain){ return { id:id, diff:diff, q:promptHtml, accept:accepts, explain:explain }; }
+const PC = (s) => '<pre class="code">' + s.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</pre>';
 const QUIZ = {
  1: [
- Q('q1e1', 'easy', '다음 코드의 <b>출력 결과</b>를 적어 보세요.\n' + PRINT_CODE('print("안녕")'), ['안녕'], '따옴표 안의 글자가 그대로 출력돼요.'),
- Q('q1e2', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(7)'), ['7'], '따옴표가 없으면 숫자를 그대로 출력해요.'),
- Q('q1e3', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print("Hi")'), ['Hi'], '문자열 Hi 그대로 출력.'),
- Q('q1e4', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(100)'), ['100'], '숫자 100 출력.'),
- Q('q1e5', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print("Python")'), ['Python'], '문자열 Python 출력.'),
- Q('q1e6', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print("좋아")'), ['좋아'], '좋아 출력.'),
- Q('q1e7', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(0)'), ['0'], '0 출력.'),
- Q('q1e8', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print("코딩")'), ['코딩'], '코딩 출력.'),
- Q('q1e9', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(42)'), ['42'], '42 출력.'),
- Q('q1e10', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print("Bye!")'), ['Bye!'], 'Bye! 출력.'),
- Q('q1h1', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print("a", "b", sep="-")'), ['a-b'], 'sep="-" 이므로 a-b.'),
- Q('q1h2', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print("Hi", end="!")'), ['Hi!'], 'end="!" 이므로 Hi!.'),
- Q('q1h3', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print("X", "Y", sep="@")'), ['X@Y'], 'sep="@" → X@Y.'),
- Q('q1h4', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print("가", "나", sep=" ")'), ['가 나'], '공백 sep → 가 나.'),
- Q('q1h5', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(1, 2, sep="-")'), ['1-2'], '숫자도 sep 적용 → 1-2.'),
- Q('q1h6', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print("Hi", "Bye", sep=" ")'), ['Hi Bye'], '공백 sep → Hi Bye.'),
- Q('q1h7', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print("끝", end=".")'), ['끝.'], 'end="." 이므로 끝.'),
- Q('q1h8', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print("A", "B", "C", sep="+")'), ['A+B+C'], 'sep="+" → A+B+C.'),
- Q('q1h9', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print("hello", end="")'), ['hello'], 'end="" 줄바꿈 없이 → hello.'),
- Q('q1h10','hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(1, 2, 3, sep="")'), ['123'], 'sep="\" 공백 없이 → 123')
+ Q('q1e1','easy','다음 코드의 출력 결과?\n'+PC('print("안녕")'),['안녕'],'따옴표 안 글자 그대로.'),
+ Q('q1e2','easy','다음 코드의 출력 결과?\n'+PC('print(7)'),['7'],'숫자 그대로.'),
+ Q('q1e3','easy','다음 코드의 출력 결과?\n'+PC('print("Hi")'),['Hi'],'Hi.'),
+ Q('q1e4','easy','다음 코드의 출력 결과?\n'+PC('print(100)'),['100'],'100.'),
+ Q('q1e5','easy','다음 코드의 출력 결과?\n'+PC('print("Python")'),['Python'],'Python.'),
+ Q('q1e6','easy','다음 코드의 출력 결과?\n'+PC('print("좋아")'),['좋아'],'좋아.'),
+ Q('q1e7','easy','다음 코드의 출력 결과?\n'+PC('print(0)'),['0'],'0.'),
+ Q('q1e8','easy','다음 코드의 출력 결과?\n'+PC('print("코딩")'),['코딩'],'코딩.'),
+ Q('q1e9','easy','다음 코드의 출력 결과?\n'+PC('print(42)'),['42'],'42.'),
+ Q('q1e10','easy','다음 코드의 출력 결과?\n'+PC('print("Bye!")'),['Bye!'],'Bye!.'),
+ Q('q1h1','hard','다음 코드의 출력 결과?\n'+PC('print("a", "b", sep="-")'),['a-b'],'sep="-" → a-b'),
+ Q('q1h2','hard','다음 코드의 출력 결과?\n'+PC('print("Hi", end="!")'),['Hi!'],'end="!" → Hi!'),
+ Q('q1h3','hard','다음 코드의 출력 결과?\n'+PC('print("X", "Y", sep="@")'),['X@Y'],'sep="@".'),
+ Q('q1h4','hard','다음 코드의 출력 결과?\n'+PC('print("가", "나", sep=" ")'),['가 나'],'공백 sep.'),
+ Q('q1h5','hard','다음 코드의 출력 결과?\n'+PC('print(1, 2, sep="-")'),['1-2'],'숫자도 sep.'),
+ Q('q1h6','hard','다음 코드의 출력 결과?\n'+PC('print("Hi", "Bye", sep=" ")'),['Hi Bye'],'Hi Bye.'),
+ Q('q1h7','hard','다음 코드의 출력 결과?\n'+PC('print("끝", end=".")'),['끝.'],'end="."'),
+ Q('q1h8','hard','다음 코드의 출력 결과?\n'+PC('print("A", "B", "C", sep="+")'),['A+B+C'],'sep="+".'),
+ Q('q1h9','hard','다음 코드의 출력 결과?\n'+PC('print("hello", end="")'),['hello'],'end="" 줄바꿈 없음.'),
+ Q('q1h10','hard','다음 코드의 출력 결과?\n'+PC('print(1, 2, 3, sep="")'),['123'],'sep="" 공백 없이.')
  ],
  2: [
- Q('q2e1', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(5 + 3)'), ['8'], '5+3 = 8'),
- Q('q2e2', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(12 - 7)'), ['5'], '12−7 = 5'),
- Q('q2e3', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(4 * 6)'), ['24'], '4×6 = 24'),
- Q('q2e4', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(8 / 2)'), ['4.0','4'], '/ 는 결과가 항상 소수 → 4.0'),
- Q('q2e5', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(10 + 20)'), ['30'], '10+20 = 30'),
- Q('q2e6', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(7 * 3)'), ['21'], '7×3 = 21'),
- Q('q2e7', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(100 - 50)'), ['50'], '100−50 = 50'),
- Q('q2e8', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(15 / 5)'), ['3.0','3'], '/ 는 소수 → 3.0'),
- Q('q2e9', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(6 + 6)'), ['12'], '6+6 = 12'),
- Q('q2e10','easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(2 * 9)'), ['18'], '2×9 = 18'),
- Q('q2h1', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(10 % 3)'), ['1'], '10÷3 의 나머지 = 1'),
- Q('q2h2', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print((2 + 3) * 4)'), ['20'], '(2+3)×4 = 5×4 = 20'),
- Q('q2h3', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(2 + 3 * 4)'), ['14'], '곱셈 먼저 → 2+12 = 14'),
- Q('q2h4', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(7 // 2)'), ['3'], '7÷2 의 몫 = 3'),
- Q('q2h5', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(8 ** 2)'), ['64'], '8² = 64'),
- Q('q2h6', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(15 // 4)'), ['3'], '15÷4 의 몫 = 3'),
- Q('q2h7', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(15 % 4)'), ['3'], '15÷4 의 나머지 = 3'),
- Q('q2h8', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(2 ** 5)'), ['32'], '2⁵ = 32'),
- Q('q2h9', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print((10 - 4) * 3)'), ['18'], '(10−4)×3 = 6×3 = 18'),
- Q('q2h10','hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('print(20 - 5 * 3)'), ['5'], '곱셈 먼저 → 20−15 = 5')
+ Q('q2e1','easy','다음 코드의 출력 결과?\n'+PC('print(5 + 3)'),['8'],'5+3=8'),
+ Q('q2e2','easy','다음 코드의 출력 결과?\n'+PC('print(12 - 7)'),['5'],'12−7=5'),
+ Q('q2e3','easy','다음 코드의 출력 결과?\n'+PC('print(4 * 6)'),['24'],'4×6=24'),
+ Q('q2e4','easy','다음 코드의 출력 결과?\n'+PC('print(8 / 2)'),['4.0','4'],'/는 소수 → 4.0'),
+ Q('q2e5','easy','다음 코드의 출력 결과?\n'+PC('print(10 + 20)'),['30'],'30'),
+ Q('q2e6','easy','다음 코드의 출력 결과?\n'+PC('print(7 * 3)'),['21'],'21'),
+ Q('q2e7','easy','다음 코드의 출력 결과?\n'+PC('print(100 - 50)'),['50'],'50'),
+ Q('q2e8','easy','다음 코드의 출력 결과?\n'+PC('print(15 / 5)'),['3.0','3'],'/는 소수 → 3.0'),
+ Q('q2e9','easy','다음 코드의 출력 결과?\n'+PC('print(6 + 6)'),['12'],'12'),
+ Q('q2e10','easy','다음 코드의 출력 결과?\n'+PC('print(2 * 9)'),['18'],'2×9=18'),
+ Q('q2h1','hard','다음 코드의 출력 결과?\n'+PC('print(10 % 3)'),['1'],'10÷3 → 1'),
+ Q('q2h2','hard','다음 코드의 출력 결과?\n'+PC('print((2 + 3) * 4)'),['20'],'(2+3)×4=20'),
+ Q('q2h3','hard','다음 코드의 출력 결과?\n'+PC('print(2 + 3 * 4)'),['14'],'곱셈 먼저 → 14'),
+ Q('q2h4','hard','다음 코드의 출력 결과?\n'+PC('print(7 // 2)'),['3'],'7//2=3'),
+ Q('q2h5','hard','다음 코드의 출력 결과?\n'+PC('print(8 ** 2)'),['64'],'8²=64'),
+ Q('q2h6','hard','다음 코드의 출력 결과?\n'+PC('print(15 // 4)'),['3'],'15//4=3'),
+ Q('q2h7','hard','다음 코드의 출력 결과?\n'+PC('print(15 % 4)'),['3'],'15%4=3'),
+ Q('q2h8','hard','다음 코드의 출력 결과?\n'+PC('print(2 ** 5)'),['32'],'2⁵=32'),
+ Q('q2h9','hard','다음 코드의 출력 결과?\n'+PC('print((10 - 4) * 3)'),['18'],'(10−4)×3=18'),
+ Q('q2h10','hard','다음 코드의 출력 결과?\n'+PC('print(20 - 5 * 3)'),['5'],'곱셈 먼저 → 5')
  ],
  3: [
- Q('q3e1', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('name = "코딩"\nprint(name)'), ['코딩'], '변수 name 의 값: 코딩'),
- Q('q3e2', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('x = 4\ny = 5\nprint(x + y)'), ['9'], '4+5 = 9'),
- Q('q3e3', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('a = "hello"\nprint(a)'), ['hello'], 'hello 출력.'),
- Q('q3e4', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('n = 10\nprint(n)'), ['10'], 'n = 10 출력.'),
- Q('q3e5', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('f = "사과"\nprint(f)'), ['사과'], 'f = "사과" 출력.'),
- Q('q3e6', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('x = 7\ny = 3\nprint(x - y)'), ['4'], '7−3 = 4'),
- Q('q3e7', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('name = "민수"\nprint(name)'), ['민수'], '민수 출력.'),
- Q('q3e8', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('a = 50\nprint(a)'), ['50'], 'a = 50 출력.'),
- Q('q3e9', 'easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('x = 2\ny = 8\nprint(x * y)'), ['16'], '2×8 = 16'),
- Q('q3e10','easy', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('b = "Banana"\nprint(b)'), ['Banana'], 'Banana 출력.'),
- Q('q3h1', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('a = 10\na = a + 5\nprint(a)'), ['15'], 'a=10 → a+5 = 15'),
- Q('q3h2', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('x = 3\nx = x * 4\nprint(x)'), ['12'], 'x=3 → 3×4 = 12'),
- Q('q3h3', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('count = 0\ncount = count + 1\nprint(count)'), ['1'], '0+1 = 1'),
- Q('q3h4', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('a = 5\nb = a * 2\nprint(b)'), ['10'], '5×2 = 10'),
- Q('q3h5', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('s = "Hi"\nprint(s * 3)'), ['HiHiHi'], '"Hi" × 3 → HiHiHi'),
- Q('q3h6', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('x = 7\nx = x - 2\nprint(x)'), ['5'], 'x=7 → x−2 = 5'),
- Q('q3h7', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('n = 4\nm = n + n\nprint(m)'), ['8'], 'n=4 → 4+4 = 8'),
- Q('q3h8', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('msg = "코"\nprint(msg * 4)'), ['코코코코'], '"코" × 4 → 코코코코'),
- Q('q3h9', 'hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('a = 20\nb = a // 3\nprint(b)'), ['6'], '20÷3 의 몫 = 6'),
- Q('q3h10','hard', '다음 코드의 출력 결과를 적어 보세요.\n' + PRINT_CODE('x = 9\ny = x % 4\nprint(y)'), ['1'], '9÷4 의 나머지 = 1')
+ Q('q3e1','easy','다음 코드의 출력 결과?\n'+PC('name = "코딩"\nprint(name)'),['코딩'],'코딩'),
+ Q('q3e2','easy','다음 코드의 출력 결과?\n'+PC('x = 4\ny = 5\nprint(x + y)'),['9'],'4+5=9'),
+ Q('q3e3','easy','다음 코드의 출력 결과?\n'+PC('a = "hello"\nprint(a)'),['hello'],'hello'),
+ Q('q3e4','easy','다음 코드의 출력 결과?\n'+PC('n = 10\nprint(n)'),['10'],'10'),
+ Q('q3e5','easy','다음 코드의 출력 결과?\n'+PC('f = "사과"\nprint(f)'),['사과'],'사과'),
+ Q('q3e6','easy','다음 코드의 출력 결과?\n'+PC('x = 7\ny = 3\nprint(x - y)'),['4'],'7-3=4'),
+ Q('q3e7','easy','다음 코드의 출력 결과?\n'+PC('name = "민수"\nprint(name)'),['민수'],'민수'),
+ Q('q3e8','easy','다음 코드의 출력 결과?\n'+PC('a = 50\nprint(a)'),['50'],'50'),
+ Q('q3e9','easy','다음 코드의 출력 결과?\n'+PC('x = 2\ny = 8\nprint(x * y)'),['16'],'2×8=16'),
+ Q('q3e10','easy','다음 코드의 출력 결과?\n'+PC('b = "Banana"\nprint(b)'),['Banana'],'Banana'),
+ Q('q3h1','hard','다음 코드의 출력 결과?\n'+PC('a = 10\na = a + 5\nprint(a)'),['15'],'10+5=15'),
+ Q('q3h2','hard','다음 코드의 출력 결과?\n'+PC('x = 3\nx = x * 4\nprint(x)'),['12'],'3×4=12'),
+ Q('q3h3','hard','다음 코드의 출력 결과?\n'+PC('count = 0\ncount = count + 1\nprint(count)'),['1'],'0+1=1'),
+ Q('q3h4','hard','다음 코드의 출력 결과?\n'+PC('a = 5\nb = a * 2\nprint(b)'),['10'],'5×2=10'),
+ Q('q3h5','hard','다음 코드의 출력 결과?\n'+PC('s = "Hi"\nprint(s * 3)'),['HiHiHi'],'HiHiHi'),
+ Q('q3h6','hard','다음 코드의 출력 결과?\n'+PC('x = 7\nx = x - 2\nprint(x)'),['5'],'7-2=5'),
+ Q('q3h7','hard','다음 코드의 출력 결과?\n'+PC('n = 4\nm = n + n\nprint(m)'),['8'],'4+4=8'),
+ Q('q3h8','hard','다음 코드의 출력 결과?\n'+PC('msg = "코"\nprint(msg * 4)'),['코코코코'],'코코코코'),
+ Q('q3h9','hard','다음 코드의 출력 결과?\n'+PC('a = 20\nb = a // 3\nprint(b)'),['6'],'20//3=6'),
+ Q('q3h10','hard','다음 코드의 출력 결과?\n'+PC('x = 9\ny = x % 4\nprint(y)'),['1'],'9%4=1')
  ]
 };
-const CHAPTER_NAME = { 1:"🖨️ print 구문", 2:"🧮 연산자", 3:"📦 변수" };
-const TOTAL_P = 10 * 3; // 연습하기 총 30
-const TOTAL_Q = 20 * 3; // 연습문제 총 60
+
+// ── OX 퀴즈 (변수 챕터 — 모든 답 사전 python3 검증) ──
+const OX = [
+ { id:'ox-e1',diff:'easy',text:'name2',answer:'O',explain:'숫자는 <b>뒤에</b> 붙여요. name2 OK!'},
+ { id:'ox-e2',diff:'easy',text:'_',answer:'O',explain:'밑줄 <code>_</code> 단독은 변수 가능!'},
+ { id:'ox-e3',diff:'easy',text:'MAX_VALUE',answer:'O',explain:'대문자 OK. 상수 명명 관례.'},
+ { id:'ox-e4',diff:'easy',text:'학생수',answer:'O',explain:'<b>한글도 식별자 OK!</b> (파이썬 3)'},
+ { id:'ox-e5',diff:'easy',text:'my-name',answer:'X',explain:'하이픈(-) 불가 → my_name'},
+ { id:'ox-e6',diff:'easy',text:'my name',answer:'X',explain:'공백 불가 → my_name'},
+ { id:'ox-e7',diff:'easy',text:'2name',answer:'X',explain:'숫자 시작 불가. name2 는 OK.'},
+ { id:'ox-e8',diff:'easy',text:'for',answer:'X',explain:'<code>for</code> 예약어'},
+ { id:'ox-e9',diff:'easy',text:'if',answer:'X',explain:'<code>if</code> 예약어'},
+ { id:'ox-e10',diff:'easy',text:'class',answer:'X',explain:'<code>class</code> 예약어'},
+ { id:'ox-h1',diff:'hard',text:'True',answer:'X',explain:'<code>True</code> 예약어이자 True 값'},
+ { id:'ox-h2',diff:'hard',text:'true',answer:'O',explain:'소문자 <code>true</code> 는 예약어 아님. 대소문자 구분!'},
+ { id:'ox-h3',diff:'hard',text:'list',answer:'O',explain:'내장함수이지만 예약어 아님 (덮어쓰면 list() 함수 사라져서 비권장)'},
+ { id:'ox-h4',diff:'hard',text:'lambda',answer:'X',explain:'<code>lambda</code> 예약어'},
+ { id:'ox-h5',diff:'hard',text:'apple!',answer:'X',explain:'특수문자 ! ? . @ $ # 모두 불가'},
+ { id:'ox-h6',diff:'hard',text:'_123',answer:'O',explain:'밑줄 시작은 OK (숫자 시작 아님)'},
+ { id:'ox-h7',diff:'hard',text:'PI',answer:'O',explain:'대문자 영문 OK'},
+ { id:'ox-h8',diff:'hard',text:'None',answer:'X',explain:'<code>None</code> 예약어·상수'},
+ { id:'ox-h9',diff:'hard',text:'NotTrue',answer:'O',explain:'전체 단어 자체가 예약어여야 금지. NotTrue 는 OK.'},
+ { id:'ox-h10',diff:'hard',text:'while',answer:'X',explain:'<code>while</code> 예약어'}
+];
+
+const CHAPTER_NAME = { 1:"🖨️ print", 2:"🧮 연산자", 3:"📦 변수" };
+const CHAP_INTRO = {
+ 1: "화면에 글자·숫자·계산 결과를 출력하는 방법을 배워요.",
+ 2: "덧셈·뺄셈부터 나눗셈 3종류(/ · // · %)까지!",
+ 3: "값을 담는 상자! 이름표 붙여 두기"
+};
+const CHAP_PARTS = {
+ 1: ['concept','practice','quiz'],
+ 2: ['concept','practice','quiz'],
+ 3: ['concept','practice','quiz','ox']
+};
+const PART_LABEL = {
+ concept:'📖 개념학습',
+ practice:'🎮 직접 타이핑 10',
+ quiz:'📝 연습문제 20',
+ ox:'⚖️ OX 퀴즈 20'
+};
 
 /* ============================================================
-   Pyodide: 한 번만 로드
+   챕터 콘텐츠 빌더
+   ============================================================ */
+function conceptHTML(ch){
+ if (ch === 1) return concept1HTML();
+ if (ch === 2) return concept2HTML();
+ return concept3HTML();
+}
+function concept1HTML(){
+ return `
+ <div class="card"><h3>1-1. print() 는 화면에 보여 주는 명령어</h3>
+ <p class="lead">print() 안에 출력하고 싶은 내용을 넣으면 화면에 보여 줘요. <b>따옴표(" ") 안</b>은 그대로 출력, <b>숫자</b>는 따옴표 없이 써요.</p>
+ <div class="preRow"><pre class="code">print("안녕")</pre><div class="arrow">→</div><pre class="result">안녕</pre></div>
+ <div class="preRow"><pre class="code">print(7)</pre><div class="arrow">→</div><pre class="result">7</pre></div>
+ <div class="preRow"><pre class="code">print(1, 2, 3)</pre><div class="arrow">→</div><pre class="result">1 2 3</pre></div>
+ <ul class="tips"><li>쉼표(,) 로 여러 개 → <b>공백</b> 구분</li><li>print 는 출력 후 <b>자동 줄바꿈</b></li></ul></div>
+ <div class="card"><h3>1-2. sep / end</h3>
+ <p class="lead"><b>sep</b> 은 값 사이 구분자, <b>end</b> 는 마지막에 붙는 글자.</p>
+ <div class="preRow"><pre class="code">print("a","b",sep="-")</pre><div class="arrow">→</div><pre class="result">a-b</pre></div>
+ <div class="preRow"><pre class="code">print("안녕",end="!")</pre><div class="arrow">→</div><pre class="result">안녕!</pre></div></div>`;
+}
+function concept2HTML(){
+ return `
+ <div class="card"><h3>2-1. +, -, *, ** </h3>
+ <div class="preRow"><pre class="code">print(7+2)</pre><div class="arrow">→</div><pre class="result">9</pre></div>
+ <div class="preRow"><pre class="code">print(7*2)</pre><div class="arrow">→</div><pre class="result">14</pre></div>
+ <div class="preRow"><pre class="code">print(2**3)</pre><div class="arrow">→</div><pre class="result">8</pre></div>
+ <ul class="tips"><li>** 는 거듭제곱. 2³ = 8</li></ul></div>
+ <div class="card"><h3>2-2. 나누기 3종류: /, //, %</h3>
+ <div class="preRow"><pre class="code">print(7/2)</pre><div class="arrow">→</div><pre class="result">3.5</pre></div>
+ <div class="preRow"><pre class="code">print(7//2)</pre><div class="arrow">→</div><pre class="result">3</pre></div>
+ <div class="preRow"><pre class="code">print(7%2)</pre><div class="arrow">→</div><pre class="result">1</pre></div>
+ <ul class="tips"><li>/ → 항상 소수 · // → 몫 · % → 나머지</li></ul></div>
+ <div class="card"><h3>2-3. 계산 순서</h3>
+ <div class="preRow"><pre class="code">print(2+3*4)</pre><div class="arrow">→</div><pre class="result">14</pre></div>
+ <div class="preRow"><pre class="code">print((2+3)*4)</pre><div class="arrow">→</div><pre class="result">20</pre></div></div>`;
+}
+function concept3HTML(){
+ return `
+ <div class="card"><h3>3-1. 변수 = 값을 담는 상자</h3>
+ <p class="lead"><b>변수</b> 는 값을 담아 두었다가 이름으로 다시 꺼내 쓰는 상자.</p>
+ <div class="preRow"><pre class="code">x=7\nprint(x)</pre><div class="arrow">→</div><pre class="result">7</pre></div>
+ <div class="preRow"><pre class="code">name="코딩"\nprint(name)</pre><div class="arrow">→</div><pre class="result">코딩</pre></div>
+ <ul class="tips"><li><b>=</b> 는 "같다" 가 아닌 "오른쪽을 왼쪽에 넣어라"</li><li>변수 이름은 <b>영어·숫자·_</b>, 숫자 시작은 ❌</li></ul></div>
+ <div class="card"><h3>3-2. 변수끼리 계산 · 값 바꾸기</h3>
+ <div class="preRow"><pre class="code">x=3\ny=5\nprint(x+y)</pre><div class="arrow">→</div><pre class="result">8</pre></div>
+ <div class="preRow"><pre class="code">a=10\na=a+5\nprint(a)</pre><div class="arrow">→</div><pre class="result">15</pre></div></div>`;
+}
+
+/* ============================================================
+   페이지 빌드: ① 챕터 컨테이너에 모든 챕터 + partPanel 동적 생성
+   ============================================================ */
+function buildChapters(){
+ const wrap = document.getElementById('chapContainer');
+ const html = [];
+ for (const ch of [1,2,3]){
+ const parts = CHAP_PARTS[ch];
+ html.push('<section id="ch'+ch+'">');
+ html.push('<div class="chapterHead"><div class="num">'+ch+'</div><div><h2>Chapter '+ch+' · '+(ch===1?'print 구문':(ch===2?'연산자':'변수'))+'</h2><div class="tag">'+CHAP_INTRO[ch]+'</div></div></div>');
+ // 탭
+ html.push('<div class="partTabs" data-chap="'+ch+'">');
+ parts.forEach((p, i) => { html.push('<button class="partTab'+(i===0?' active':'')+'" data-part="'+p+'">'+PART_LABEL[p]+'</button>'); });
+ html.push('</div>');
+ // partPanel 들
+ parts.forEach((p, i) => {
+ html.push('<div class="partPanel'+((i!==0)?' hide':'')+'" data-chap="'+ch+'" data-part="'+p+'" id="panel-'+ch+'-'+p+'"></div>');
+ });
+ html.push('</section>');
+ }
+ wrap.innerHTML = html.join('');
+}
+
+/* ============================================================
+   Pyodide
    ============================================================ */
 let pyReady = null;
-function loadPyodidePkg(){
- if (pyReady) return pyReady;
- pyReady = (async () => {
- const py = await window.loadPyodide({ indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/" });
- return py;
- })();
- return pyReady;
-}
-async function ensurePyodide(){
- if (!pyReady) pyReady = loadPyodidePkg();
- await pyReady;
- const bar = document.getElementById("pyLoadingBar");
- if (bar) bar.hidden = true;
- return pyReady;
-}
-async function runPython(code){
- const py = await ensurePyodide();
- py.runPython(`
-import sys, io
-_stdout_buf = io.StringIO()
-sys.stdout = _stdout_buf
-def _flush_stdout():
- v = _stdout_buf.getvalue()
- sys.stdout = sys.__stdout__
- return v
-`);
- try {
- py.runPython(code);
- } finally {
- const out = py.runPython("_flush_stdout()");
- return String(out || "");
- }
+function loadPy(){ if (pyReady) return pyReady; pyReady = (async () => { const py = await window.loadPyodide({ indexURL:"https://cdn.jsdelivr.net/pyodide/v0.26.4/full/" }); return py; })(); return pyReady; }
+async function ensurePy(){ await loadPy(); const b = document.getElementById("pyLoadingBar"); if (b) b.style.display = "none"; }
+async function runPy(code){
+ const py = await ensurePy();
+ py.runPython('import sys, io\n_b=io.StringIO()\nsys.stdout=_b\ndef _f():\n v=_b.getvalue(); sys.stdout=sys.__stdout__; return v\n');
+ try { py.runPython(code); } finally { return String(py.runPython("_f()") || ""); }
 }
 
 /* ============================================================
-   UI: 탭 토글, 에디터, 연습하기 예제 바꾸기
+   사용 유틸
    ============================================================ */
-document.addEventListener("DOMContentLoaded", () => {
- // ─── 탭 ───
- document.querySelectorAll(".partTabs").forEach(grp => {
- const chap = grp.dataset.chap;
- grp.querySelectorAll(".partTab").forEach(btn => {
- btn.addEventListener("click", () => {
- grp.querySelectorAll(".partTab").forEach(b => b.classList.remove("active"));
- btn.classList.add("active");
- const part = btn.dataset.part;
- document.querySelectorAll(`.partPanel[data-chap="${chap}"]`).forEach(p => p.hidden = (p.dataset.part !== part));
- if (part === "quiz") renderQuiz(chap);
- });
- });
- });
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function normOut(s){ return String(s).trim().replace(/\r/g,"").replace(/ +/g," ").replace(/\n+$/,"").replace(/^ +/gm,""); }
 
- // ─── 연습하기: 처음 로딩 시 1번 예제 보여 주기 ───
- Object.keys(PRACTICE).forEach(ch => loadExample(Number(ch)));
+/* ============================================================
+   직접 타이핑 연습 (v4 핵심) — 정답이 미리 들어 있지 않은 starter
+   ============================================================ */
+const typeState = { 1: null, 2: null, 3: null };
 
- // ─── ▶ 실행 ───
- document.querySelectorAll("[data-run]").forEach(b => {
- b.addEventListener("click", async () => {
- const ch = Number(b.dataset.run);
- const editor = document.getElementById("ed" + ch);
- const out = document.getElementById("out" + ch);
- out.classList.remove("err"); out.textContent = "⏳ 실행 중...";
- try {
- const result = await runPython(editor.value);
- const trimmed = result.replace(/\n$/, "");
- if (trimmed) out.innerHTML = '<span class="okmsg">✅ 결과:</span>' + escapeHtml(trimmed);
- else out.innerHTML = '<span class="okmsg">✅ 실행 완료 (출력 없음)</span>';
- } catch (err) {
- out.classList.add("err");
- out.innerHTML = '<span class="okmsg" style="color:#fca5a5">⚠️ 에러:</span>' + escapeHtml(String(err.message || err));
- }
- });
- });
-
- // ─── 🔄 예제 바꾸기 (다음) ───
- document.querySelectorAll("[data-swap]").forEach(b => {
- b.addEventListener("click", () => {
- const ch = Number(b.dataset.swap);
- exIdx[ch] = (exIdx[ch] + 1) % PRACTICE[ch].length;
- loadExample(ch);
- });
- });
-
- // ─── ◀ ▶ 페이지 이동 ───
- document.querySelectorAll("[data-ex-prev]").forEach(b => {
- b.addEventListener("click", () => {
- const ch = Number(b.dataset.exPrev);
- exIdx[ch] = (exIdx[ch] - 1 + PRACTICE[ch].length) % PRACTICE[ch].length;
- loadExample(ch);
- });
- });
- document.querySelectorAll("[data-ex-next]").forEach(b => {
- b.addEventListener("click", () => {
- const ch = Number(b.dataset.exNext);
- exIdx[ch] = (exIdx[ch] + 1) % PRACTICE[ch].length;
- loadExample(ch);
- });
- });
-
- // ─── Pyodide 미리 로드 ───
- ensurePyodide().catch(e => {
- const bar = document.getElementById("pyLoadingBar");
- if (bar) bar.innerHTML = '⚠️ 파이썬 엔진 로드 실패. 인터넷 연결을 확인하고 새로고침 해 주세요. (' + escapeHtml(String(e.message || e)) + ')';
- });
-});
-
-function loadExample(ch){
- const idx = exIdx[ch];
- document.getElementById("ed" + ch).value = PRACTICE[ch][idx];
- document.getElementById("exLabel" + ch).innerHTML = '<span>' + (idx + 1) + '</span>/' + PRACTICE[ch].length;
- document.getElementById("exHint" + ch).textContent = PRACTICE_HINT[ch][idx];
+function loadTypeExercise(ch){
+ const idx = typeState[ch];
+ const item = TYPE_EX[ch][idx];
+ const panel = document.getElementById('panel-'+ch+'-practice');
+ panel.innerHTML = `
+ <div class="typeExercise">
+ <div class="typeGoal">
+ <span class="badge">⌨️ 예제 ${idx+1} / ${TYPE_EX[ch].length}</span>
+ <div class="body">
+ <h3>🎯 이 예제의 목표: 다음 결과를 출력해 보세요.</h3>
+ <span class="labelWant">${esc(item.task)}</span>
+ <p style="margin-top:8px;font-size:13.5px;color:#4b5563"><b>📖 방법:</b> 아래 빈 곳에 파이썬 코드를 <b>직접 입력</b>해 보세요. 정답 코드가 미리 적혀 있지 않아요!</p>
+ </div>
+ </div>
+ <div class="editorWrap">
+ <div class="editorHead">
+ <span><span class="dot"></span>${ch===1?'print':(ch===2?'연산자':'변수')} · 예제 ${idx+1}/${TYPE_EX[ch].length}</span>
+ <div>
+ <span class="meta" id="tMeta${ch}">빈 상태 · 직접 코드를 입력해 주세요</span>
+ <button class="runBtnHint" data-type-hint="${ch}">💡 힌트</button>
+ <button class="runBtnHint" data-type-reveal="${ch}" style="background:#dc2626">👀 정답 보기</button>
+ <button class="runBtnGo" data-type-run="${ch}">▶ 실행</button>
+ <button class="runBtnNext" data-type-next="${ch}">🔄 새 문제</button>
+ </div>
+ </div>
+ <textarea class="codeArea" id="ed${ch}" spellcheck="false">${esc(item.starter)}</textarea>
+ <div class="outBox" id="out${ch}">▶ 직접 코드를 입력하고 ▶ 실행 버튼을 눌러 주세요!</div>
+ </div>
+ <div style="margin-top:14px;background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:14px;font-size:14.5px">
+ <b>🎓 학습 효과:</b> 예제마다 <b>10번</b> 직접 타이핑하면서 손에 익혀요. 처음엔 힌트 OK, 익숙해지면 정답 보기 없이 풀 수 있게 도전!
+ </div>
+ </div>`;
+ bindTypeExercise(ch);
+ resumeTypeExercise(ch);
 }
 
-function escapeHtml(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-function norm(s){
- s = String(s).trim();
- return s.replace(/[\s\u00A0]+/g," ");
+function resumeTypeExercise(ch){
+ // textarea 가 존재하면 Tab 키 핸들러 부착
+ const ta = document.getElementById('ed' + ch);
+ if (ta && !ta.dataset.tab){
+ ta.dataset.tab = "1";
+ ta.addEventListener('keydown', e => {
+ if (e.key === 'Tab'){
+ e.preventDefault();
+ const s = ta.selectionStart, end = ta.selectionEnd;
+ ta.value = ta.value.substring(0, s) + "  " + ta.value.substring(end);
+ ta.selectionStart = ta.selectionEnd = s + 2;
+ }
+ });
+ }
+}
+
+function bindTypeExercise(ch){
+ const idx = typeState[ch];
+ document.querySelector('[data-type-run="'+ch+'"]')?.addEventListener('click', async () => {
+ const ta = document.getElementById('ed'+ch);
+ const out = document.getElementById('out'+ch);
+ out.classList.remove('err','matched'); out.textContent = "⏳ 실행 중...";
+ try {
+ const result = await runPy(ta.value);
+ const got = normOut(result);
+ const want = normOut(TYPE_EX[ch][idx].task);
+ if (got === want){
+ out.classList.add('matched');
+ out.innerHTML = '<span class="okmsg">✅ 정답이에요! 출력 결과가 일치합니다.</span><br><b>실제 출력:</b><br>'+esc(got);
+ } else {
+ out.classList.add('err');
+ out.innerHTML = '<span class="okmsg" style="color:#fca5a5">⚠️ 출력 불일치</span><br><b>내가 실행한 결과:</b><br>'+esc(got || '(출력 없음)') + '<br><br><b>목표 출력:</b><br>'+esc(want);
+ }
+ } catch (err){
+ out.classList.add('err');
+ out.innerHTML = '<span class="okmsg" style="color:#fca5a5">⚠️ 에러:</span>' + esc(String(err.message||err));
+ }
+ });
+ document.querySelector('[data-type-hint="'+ch+'"]')?.addEventListener('click', () => {
+ const item = TYPE_EX[ch][idx];
+ const ta = document.getElementById('ed'+ch);
+ const isFirst = ta.value.trim() === item.starter.replace('#','').trim() || ta.value.trim() === '';
+ const next = isFirst ? item.hintA : item.hintB;
+ alert('💡 힌트\n\n' + next);
+ });
+ document.querySelector('[data-type-reveal="'+ch+'"]')?.addEventListener('click', () => {
+ const item = TYPE_EX[ch][idx];
+ const ta = document.getElementById('ed'+ch);
+ if (confirm('정답 코드를 보여줄까요? (이후 실행해도 더 이상 정답 체크가 적용되지 않아요!)')){
+ ta.value = item.answer;
+ ta.readOnly = true;
+ document.getElementById('tMeta'+ch).innerHTML = '<span style="color:#fbbf24">정답 보기 모드 (자유 실행만 가능)</span>';
+ }
+ });
+ document.querySelector('[data-type-next="'+ch+'"]')?.addEventListener('click', () => {
+ typeState[ch] = (typeState[ch] + 1) % TYPE_EX[ch].length;
+ loadTypeExercise(ch);
+ });
 }
 
 /* ============================================================
-   연습문제: 주관식 + 자동 채점
+   주관식 연습문제
    ============================================================ */
 const userAnswers = {};
-
 function renderQuiz(chap){
- const panel = document.querySelector(`.partPanel[data-chap="${chap}"][data-part="quiz"]`);
+ const panel = document.getElementById('panel-'+chap+'-quiz');
  const qs = QUIZ[chap];
- const answered = qs.filter(q => userAnswers[q.id]).length;
- let html = '<div class="card">';
- html += '<div class="quizTop"><div class="progressBar"><i id="quizBar' + chap + '" style="width:' + (qs.length ? answered/qs.length*100 : 0) + '%"></i></div>';
- html += '<div style="font-size:13px;color:var(--sub)">Chapter ' + chap + ' · ' + qs.length + '문제 · ' + answered + '개 완료</div></div>';
- qs.forEach((q, i) => {
- const badge = q.diff === "easy" ? '<span class="diffBadge easy">난이도 1 · 쉬움</span>' : '<span class="diffBadge hard">난이도 2 · 어려움</span>';
+ let html = '<div class="card"><div class="qBar"><div class="progressBar"><i id="qBar'+chap+'" style="width:0%"></i></div><div style="font-size:13px;color:var(--sub)">Chapter '+chap+' · '+qs.length+'문제 · <span id="qDone'+chap+'">0</span>개 완료</div></div>';
+ qs.forEach((q,i)=>{
+ const badge = q.diff==='easy'?'<span class="diffBadge easy">난이도 1 · 쉬움</span>':'<span class="diffBadge hard">난이도 2 · 어려움</span>';
  const done = userAnswers[q.id];
- html += '<div id="q_' + q.id + '" style="margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--soft)">';
- html += '<div style="font-weight:700;color:#3730a3">' + chap + '-' + (i+1) + ' 문제 ' + badge + '</div>';
- html += '<div class="qtext" style="margin-top:6px">' + q.q + '</div>';
- html += '<input class="ansInput" data-id="' + q.id + '" data-diff="' + q.diff + '" placeholder="정답을 입력 후 Enter 또는 [정답 확인]"';
- if (done) html += ' value="' + escapeHtml(done.val) + '" disabled';
- html += '>';
- html += '<div style="margin-top:8px"><button class="btn go" data-check="' + q.id + '"' + (done ? ' disabled' : '') + '>정답 확인</button></div>';
- html += '<div class="fb' + (done ? ' show ' + (done.right ? 'ok' : 'no') : '') + '" id="fb_' + q.id + '">';
- if (done) {
- html += done.right
- ? '<div class="head">✅ 정답이에요!</div><div class="explain">📖 해설: ' + q.explain + '</div>'
- : '<div class="head">❌ 다시 생각해 볼까요?</div><div class="ansLine">내가 쓴 답: <b>'+escapeHtml(done.val)+'</b> · 정답: <b>' + escapeHtml(q.accept[0]) + '</b> (또는 ' + q.accept.map(a => '"' + a + '"').join(", ") + ' 모두 정답)</div><div class="explain">📖 해설: ' + q.explain + '</div>';
- }
+ html += '<div style="margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--soft)">';
+ html += '<div style="font-weight:700;color:#3730a3">'+chap+'-'+(i+1)+' 문제 '+badge+'</div>';
+ html += '<div style="margin-top:6px;font-size:15.5px">'+q.q+'</div>';
+ html += '<input class="ansInput" data-id="'+q.id+'" placeholder="정답을 입력해 주세요"'+(done?' value="'+esc(done.val)+'" disabled':'')+'>';
+ html += '<div style="margin-top:8px"><button class="btn go" data-check="'+q.id+'"'+(done?' disabled':'')+'>정답 확인</button></div>';
+ html += '<div class="fb '+(done?' show '+(done.right?'ok':'no'):'')+'" id="fb_'+q.id+'">';
+ if (done) html += done.right ? '<div class="head">✅ 정답이에요!</div><div class="explain">📖 '+q.explain+'</div>' : '<div class="head">❌ 다시 생각해 볼까요?</div><div class="ansLine">내가 쓴 답: <b>'+esc(done.val)+'</b> · 정답: <b>'+esc(q.accept[0])+'</b> (또는 '+q.accept.map(a => '"'+a+'"').join(', ')+' 모두 정답)</div><div class="explain">📖 '+q.explain+'</div>';
  html += '</div></div>';
  });
- if (Number(chap) === 3) {
- html += '<div style="margin-top:20px;text-align:center"><button class="btn go" id="finalBtn">🏁 결과 보기</button></div>';
- }
+ if (chap === '3') html += '<div style="margin-top:18px;text-align:center"><button class="btn go" id="finalBtn">🏁 결과 보기</button></div>';
  html += '</div>';
  panel.innerHTML = html;
-
- panel.querySelectorAll(".ansInput").forEach(inp => {
- inp.addEventListener("keydown", e => {
- if (e.key === "Enter") checkAnswer(inp.dataset.id, inp.value, inp.dataset.diff);
+ panel.querySelectorAll(".ansInput").forEach(inp => inp.addEventListener('keydown', e => { if (e.key==='Enter') checkAnswer(inp.dataset.id, inp.value); }));
+ panel.querySelectorAll("[data-check]").forEach(b => b.addEventListener('click', () => { const inp = panel.querySelector('.ansInput[data-id="'+b.dataset.check+'"]'); checkAnswer(b.dataset.check, inp.value); }));
+ if (chap === '3') document.getElementById('finalBtn').addEventListener('click', showResults);
+ document.querySelectorAll("input.ansInput[data-id]").forEach(inp => {
+ // disabled 처리 외 키 이벤트 추가
  });
- });
- panel.querySelectorAll("[data-check]").forEach(b => {
- b.addEventListener("click", () => {
- const inp = panel.querySelector('.ansInput[data-id="' + b.dataset.check + '"]');
- checkAnswer(b.dataset.check, inp.value, inp.dataset.diff);
- });
- });
- if (Number(chap) === 3) {
- const fb = document.getElementById("finalBtn");
- if (fb) fb.addEventListener("click", showResults);
- }
  refreshNav();
 }
-
-function checkAnswer(id, rawVal, diff){
+function checkAnswer(id, rawVal){
  const inp = document.querySelector('.ansInput[data-id="'+id+'"]');
- const fb = document.getElementById("fb_" + id);
- if (!inp || !fb) return;
- const v = norm(rawVal);
- if (!v) { inp.focus(); return; }
- const btn = inp.parentElement.querySelector("button");
- if (fb.classList.contains("show")) return; // 이미 채점된 문제
-
- let q = null;
- for (const ch in QUIZ){
- for (const qq of QUIZ[ch]){ if (qq.id === id){ q = qq; break; } }
- }
- const right = q.accept.some(a => norm(a) === v);
- userAnswers[id] = { val: rawVal, diff: diff, right: right, accept: q.accept, explain: q.explain };
-
- inp.disabled = true;
- if (btn) btn.disabled = true;
- if (right){
- fb.className = "fb ok show";
- fb.innerHTML = '<div class="head">✅ 정답이에요!</div><div class="explain">📖 해설: ' + q.explain + '</div>';
- } else {
- fb.className = "fb no show";
- fb.innerHTML = '<div class="head">❌ 다시 생각해 볼까요?</div><div class="ansLine">내가 쓴 답: <b>'+escapeHtml(rawVal)+'</b> · 정답: <b>' + escapeHtml(q.accept[0]) + '</b> (또는 ' + q.accept.map(a => '"' + a + '"').join(", ") + ' 모두 정답)</div><div class="explain">📖 해설: ' + q.explain + '</div>';
- }
+ const fb = document.getElementById('fb_'+id);
+ if (!inp||!fb) return;
+ const v = String(rawVal).trim().replace(/\s+/g,' ');
+ if (!v){ inp.focus(); return; }
+ const btn = inp.parentElement.querySelector('button');
+ if (fb.classList.contains('show')) return;
+ let q=null; for (const ch in QUIZ){ for (const qq of QUIZ[ch]){ if (qq.id===id){ q=qq; break; } } }
+ const right = q.accept.some(a => String(a).trim().replace(/\s+/g,' ') === v);
+ userAnswers[id] = { val:rawVal, right:right };
+ inp.disabled = true; if (btn) btn.disabled = true;
+ fb.className = 'fb ' + (right?'ok':'no') + ' show';
+ fb.innerHTML = right ? '<div class="head">✅ 정답이에요!</div><div class="explain">📖 '+q.explain+'</div>' : '<div class="head">❌ 다시 생각해 볼까요?</div><div class="ansLine">내가 쓴 답: <b>'+esc(rawVal)+'</b> · 정답: <b>'+esc(q.accept[0])+'</b> (또는 '+q.accept.map(a => '"'+a+'"').join(', ')+' 모두 정답)</div><div class="explain">📖 '+q.explain+'</div>';
  refreshNav();
-}
-
-function refreshNav(){
- const answered = Object.keys(userAnswers).length;
- const tbars = document.querySelectorAll('[id^="quizBar"]');
- tbars.forEach(b => { /* 갱신은 renderQuiz 시 처리 */ });
- const globalBar = document.getElementById("pbar");
- const navCount = document.getElementById("navCount");
- if (globalBar) globalBar.style.width = (answered / TOTAL_Q * 100) + "%";
- const okCnt = Object.values(userAnswers).filter(a => a.right).length;
- if (navCount) navCount.textContent = '문제 ' + answered + '/60 · 정답 ' + okCnt;
 }
 
 /* ============================================================
-   결과 집계 + 그래프
+   OX 퀴즈
    ============================================================ */
+const userOX = {};
+function renderOX(){
+ const easyList = OX.filter(o => o.diff==='easy');
+ const hardList = OX.filter(o => o.diff==='hard');
+ const panel = document.getElementById('panel-3-ox');
+ let html = '<div class="card"><div class="qBar"><div class="progressBar" style="width:240px"><i id="oxBar" style="width:0%"></i></div><div style="font-size:13px;color:var(--sub)">쉬움 10 + 어려움 10 · <span id="oxDone">0</span>/20 완료</div></div>';
+ html += '<div class="oxCol"><div><div style="font-weight:800;color:#15803d;margin-bottom:6px">🟢 쉬움 (10)</div>';
+ easyList.forEach(q => html += oxCardHTML(q));
+ html += '</div><div><div style="font-weight:800;color:#b91c1c;margin-bottom:6px">🔴 어려움 (10)</div>';
+ hardList.forEach(q => html += oxCardHTML(q));
+ html += '</div></div>';
+ html += '<div id="oxResultBox" style="margin-top:18px"></div></div>';
+ panel.innerHTML = html;
+ // 이벤트 위임
+ panel.addEventListener('click', e => {
+ const btn = e.target.closest('[data-ox]');
+ if (!btn) return;
+ const id = btn.dataset.ox, choice = btn.dataset.choice;
+ const q = OX.find(o => o.id===id);
+ if (!q || userOX[id]) return;
+ userOX[id] = { choice:choice, right: choice===q.answer };
+ renderOX(); refreshNav();
+ });
+ const n = Object.keys(userOX).length;
+ const b1 = document.getElementById('oxDone'); if (b1) b1.textContent = n;
+ const b2 = document.getElementById('oxBar'); if (b2) b2.style.width = (n/OX.length*100) + '%';
+ updateOXResult();
+}
+function oxCardHTML(q){
+ const done = userOX[q.id];
+ let body = '<div class="oxCard" style="border-left:4px solid '+(q.diff==='easy'?'#15803d':'#b91c1c')+'">';
+ body += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span class="diffBadge '+(q.diff==='easy'?'easy':'hard')+'">'+(q.diff==='easy'?'쉬움':'어려움')+'</span><span class="oxName">'+esc(q.text)+'</span><span style="font-size:13px;color:var(--sub);margin-left:auto">← 변수 이름?</span></div>';
+ if (done){
+ body += '<div class="oxChoiceRow"><button class="oxOXBtn O" disabled>⭕ O</button><button class="oxOXBtn X" disabled>❌ X</button></div>';
+ body += '<div class="fb '+(done.right?'ok':'no')+' show"><div class="head">'+(done.right?'✅ 정답!':'❌ 아쉬워요!')+'</div><div class="ansLine">정답: <b>'+q.answer+'</b> · 내가 고른 답: <b>'+done.choice+'</b></div><div class="explain">📖 '+q.explain+'</div></div>';
+ } else {
+ body += '<div class="oxChoiceRow"><button data-ox="'+q.id+'" data-choice="O" class="oxOXBtn O">⭕ O — 변수 OK</button><button data-ox="'+q.id+'" data-choice="X" class="oxOXBtn X">❌ X — 변수 불가</button></div>';
+ }
+ body += '</div>';
+ return body;
+}
+function updateOXResult(){
+ const box = document.getElementById('oxResultBox');
+ if (!box) return;
+ const ks = Object.keys(userOX);
+ if (ks.length === 0){
+ box.innerHTML = '<div style="background:var(--soft);border:1px dashed var(--line);border-radius:14px;padding:18px;text-align:center;font-size:14.5px;color:var(--sub)">⬆ 위의 <b>⭕ O</b> 또는 <b>❌ X</b> 를 골라 채점해 보세요!</div>';
+ return;
+ }
+ const o = Object.values(userOX).filter(a => a.right).length;
+ const eOK = OX.filter(q => q.diff==='easy' && userOX[q.id] && userOX[q.id].right).length;
+ const hOK = OX.filter(q => q.diff==='hard' && userOX[q.id] && userOX[q.id].right).length;
+ const pct = Math.round(o/ks.length*100);
+ const msg = pct===100?'완벽해요! 마스터! 👑':pct>=80?'아주 잘해요! 🌟':pct>=60?'꽤 잘했어요! 💪':pct>=40?'괜찮아요. 📖':'처음이라 충분! 🌱';
+ box.innerHTML = '<div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center"><div style="font-size:30px;font-weight:800;color:#3730a3">OX 점수 '+o+' / '+ks.length+' · '+pct+'점</div><div style="margin-top:6px;color:var(--sub);font-size:15.5px">'+msg+'</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px"><div style="background:#ecfdf5;border-radius:10px;padding:12px"><div style="font-size:13px;color:#15803d;font-weight:800">🟢 쉬움</div><div style="font-size:24px;font-weight:800;color:#15803d">'+eOK+' / 10</div></div><div style="background:#fef2f2;border-radius:10px;padding:12px"><div style="font-size:13px;color:#b91c1c;font-weight:800">🔴 어려움</div><div style="font-size:24px;font-weight:800;color:#b91c1c">'+hOK+' / 10</div></div></div></div>';
+}
+
+/* ============================================================
+   진행률 / 결과 분석
+   ============================================================ */
+function refreshNav(){
+ const ans = Object.keys(userAnswers).length;
+ const oxAns = Object.keys(userOX).length;
+ const tot = ans + oxAns;
+ const ok = Object.values(userAnswers).filter(a => a.right).length;
+ const oxOk = Object.values(userOX).filter(a => a.right).length;
+ const pb = document.getElementById('pbar');
+ if (pb) pb.style.width = (tot/80*100) + '%';
+ const nc = document.getElementById('navCount');
+ if (nc) nc.textContent = tot + '/80 완료 · 정답 ' + (ok+oxOk);
+ // 챕터별 진행 바도 갱신
+ ['1','2','3'].forEach(ch => {
+ const bar = document.getElementById('qBar'+ch);
+ const ans = QUIZ[ch].filter(q => userAnswers[q.id]).length;
+ if (bar) bar.style.width = (ans/QUIZ[ch].length*100)+'%';
+ const done = document.getElementById('qDone'+ch);
+ if (done) done.textContent = ans;
+ });
+}
 function showResults(){
  const stats = {1:{easy:{n:0,o:0},hard:{n:0,o:0}},2:{easy:{n:0,o:0},hard:{n:0,o:0}},3:{easy:{n:0,o:0},hard:{n:0,o:0}}};
- const totalN = TOTAL_Q;
- const totalO = Object.values(userAnswers).filter(a => a.right).length;
- const answeredN = Object.keys(userAnswers).length;
- for (const ch in QUIZ){
- QUIZ[ch].forEach(q => {
- stats[ch][q.diff].n++;
- if (userAnswers[q.id] && userAnswers[q.id].right) stats[ch][q.diff].o++;
- });
+ const totalN = 60, totalO = Object.values(userAnswers).filter(a => a.right).length, answeredN = Object.keys(userAnswers).length;
+ for (const ch in QUIZ){ QUIZ[ch].forEach(q => { stats[ch][q.diff].n++; if (userAnswers[q.id]?.right) stats[ch][q.diff].o++; }); }
+ const pct = Math.round(totalO/totalN*100);
+ // 결과 차트 삽입 위치
+ let anchor = document.getElementById('resultsAnchor');
+ if (!anchor){
+ anchor = document.createElement('section');
+ anchor.id = 'resultsAnchor';
+ document.getElementById('chapContainer').after(anchor);
  }
- const pct = Math.round((totalO / totalN) * 100);
- document.getElementById("resultsSection").hidden = false;
- document.getElementById("finalScore").textContent = "총 " + totalO + " / " + totalN + " 정답 · " + pct + "점";
- let msg = pct === 100 ? "완벽해요! 파이썬 마스터! 👑"
- : pct >= 80 ? "아주 잘했어요! 🌟"
- : pct >= 60 ? "꽤 잘했어요. 한 번 더 복습해 봐요! 💪"
- : pct >= 40 ? "괜찮아요. 개념을 다시 보고 도전! 📖"
- : "처음이라 충분해요. 천천히 다시! 🌱";
- if (answeredN < totalN) msg += " (아직 안 푼 " + (totalN - answeredN) + "문제는 오답 처리되었어요)";
- document.getElementById("finalMsg").textContent = msg;
-
- drawBarChart(stats);
- drawWeakAreas(stats);
- document.getElementById("resultsSection").scrollIntoView({behavior:"smooth", block:"start"});
- document.getElementById("restartBtn").onclick = () => {
- for (const k in userAnswers) delete userAnswers[k];
- document.getElementById("resultsSection").hidden = true;
- refreshNav();
- // 마지막 챕터의 quiz 패널 재렌더
- renderQuiz(3);
- window.scrollTo({top:0, behavior:"smooth"});
- };
-}
-
-function drawBarChart(stats){
  const items = [
- { label:"print·쉬움", n:stats[1].easy.n, o:stats[1].easy.o },
- { label:"print·어려움", n:stats[1].hard.n, o:stats[1].hard.o },
- { label:"연산자·쉬움", n:stats[2].easy.n, o:stats[2].easy.o },
- { label:"연산자·어려움", n:stats[2].hard.n, o:stats[2].hard.o },
- { label:"변수·쉬움", n:stats[3].easy.n, o:stats[3].easy.o },
- { label:"변수·어려움", n:stats[3].hard.n, o:stats[3].hard.o }
- ];
- const W = 760, H = 320, ML = 60, MR = 20, MT = 20, MB = 50;
- const innerW = W - ML - MR, innerH = H - MT - MB;
- const bw = innerW / items.length * 0.6;
- const gap = innerW / items.length;
- let svg = '';
- for (let i = 0; i <= 4; i++){
- const y = MT + innerH * (i/4);
- svg += '<line x1="'+ML+'" y1="'+y+'" x2="'+(W-MR)+'" y2="'+y+'" stroke="#e5e9f7" stroke-dasharray="3,3"/>';
- svg += '<text x="'+(ML-8)+'" y="'+(y+4)+'" text-anchor="end" font-size="11" fill="#6b7280">'+(100-i*25)+'%</text>';
- }
- items.forEach((it, i) => {
- const x = ML + gap * i + (gap - bw)/2;
- const pctVal = it.n ? (it.o / it.n) * 100 : 0;
- const bh = (pctVal/100) * innerH;
- const y = MT + innerH - bh;
- const color = pctVal >= 80 ? "#16a34a" : pctVal >= 60 ? "#f59e0b" : "#ef4444";
- svg += '<rect x="'+x+'" y="'+(y+3)+'" width="'+bw+'" height="'+bh+'" fill="#000" opacity=".06" rx="6"/>';
- svg += '<rect x="'+x+'" y="'+y+'" width="'+bw+'" height="'+bh+'" fill="'+color+'" rx="6"/>';
- svg += '<text x="'+(x+bw/2)+'" y="'+(y-6)+'" text-anchor="middle" font-size="12" fill="#262837" font-weight="700">' + (it.n ? Math.round(pctVal)+'%' : '미응시') + '</text>';
- svg += '<text x="'+(x+bw/2)+'" y="'+(H-MB+18)+'" text-anchor="middle" font-size="11" fill="#374151">' + it.label + '</text>';
- svg += '<text x="'+(x+bw/2)+'" y="'+(H-MB+33)+'" text-anchor="middle" font-size="10" fill="#9ca3af">' + it.o + '/' + it.n + '</text>';
+ {label:"print·쉬움",n:stats[1].easy.n,o:stats[1].easy.o},
+ {label:"print·어려움",n:stats[1].hard.n,o:stats[1].hard.o},
+ {label:"연산자·쉬움",n:stats[2].easy.n,o:stats[2].easy.o},
+ {label:"연산자·어려움",n:stats[2].hard.n,o:stats[2].hard.o},
+ {label:"변수·쉬움",n:stats[3].easy.n,o:stats[3].easy.o},
+ {label:"변수·어려움",n:stats[3].hard.n,o:stats[3].hard.o}];
+ const W=760,H=320,ML=60,MR=20,MT=20,MB=50;
+ const innerW=W-ML-MR,innerH=H-MT-MB,bw=innerW/items.length*0.6,gap=innerW/items.length;
+ let svg='';
+ for(let i=0;i<=4;i++){ const y=MT+innerH*(i/4); svg+='<line x1="'+ML+'" y1="'+y+'" x2="'+(W-MR)+'" y2="'+y+'" stroke="#e5e9f7" stroke-dasharray="3,3"/><text x="'+(ML-8)+'" y="'+(y+4)+'" text-anchor="end" font-size="11" fill="#6b7280">'+(100-i*25)+'%</text>'; }
+ items.forEach((it,i)=>{ const x=ML+gap*i+(gap-bw)/2,pv=it.n?it.o/it.n*100:0,bh=(pv/100)*innerH,y=MT+innerH-bh,col=pv>=80?'#16a34a':pv>=60?'#f59e0b':'#ef4444'; svg += '<rect x="'+x+'" y="'+(y+3)+'" width="'+bw+'" height="'+bh+'" fill="#000" opacity=".06" rx="6"/><rect x="'+x+'" y="'+y+'" width="'+bw+'" height="'+bh+'" fill="'+col+'" rx="6"/><text x="'+(x+bw/2)+'" y="'+(y-6)+'" text-anchor="middle" font-size="12" font-weight="700">'+(it.n?Math.round(pv)+'%':'–')+'</text><text x="'+(x+bw/2)+'" y="'+(H-MB+18)+'" text-anchor="middle" font-size="11">'+it.label+'</text><text x="'+(x+bw/2)+'" y="'+(H-MB+33)+'" text-anchor="middle" font-size="10" fill="#9ca3af">'+it.o+'/'+it.n+'</text>'; });
+ anchor.innerHTML = `<div class="card" style="text-align:center;padding:30px 20px"><div style="font-size:50px">🏁</div><div style="font-size:30px;font-weight:800;color:#3730a3;margin:8px 0">총 ${totalO} / ${totalN} 정답 · ${pct}점</div><div style="color:var(--sub);font-size:16px;margin-bottom:18px">${pct>=90?'완벽! 👑':pct>=70?'잘했어요!':pct>=50?'괜찮아요!':'처음이라 충분!'}</div><div class="endChartBox"><h4 style="font-size:16px;color:#3730a3;margin-bottom:6px">📊 영역별 분석</h4>${svg}</div><button class="btn go" id="restartBtn">🔄 다시 풀기</button></div>`;
+ document.getElementById('restartBtn').addEventListener('click', () => {
+ for (const k in userAnswers) delete userAnswers[k];
+ for (const k in userOX) delete userOX[k];
+ anchor.innerHTML = '';
+ refreshNav();
+ window.scrollTo({top:0, behavior:'smooth'});
  });
- document.getElementById("barChart").innerHTML = svg;
- const legend = [
- {col:"#16a34a", name:"잘 하는 영역 (80% 이상)"},
- {col:"#f59e0b", name:"보통 (60~79%)"},
- {col:"#ef4444", name:"집중 복습 권장 (60% 미뫘)"}
- ];
- let lh = "";
- legend.forEach(l => { lh += '<span style="display:inline-flex;align-items:center;gap:6px;margin-right:14px;font-size:13px"><span style="width:14px;height:14px;background:'+l.col+';border-radius:3px;display:inline-block"></span>'+l.name+'</span>'; });
- const cl = document.getElementById("chartLegend"); if (cl) cl.innerHTML = lh;
+ anchor.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
-function drawWeakAreas(stats){
- const items = [];
- for (const ch in stats){
- const e = stats[ch].easy, h = stats[ch].hard;
- items.push({label: CHAPTER_NAME[ch] + " · 쉬움", n:e.n, o:e.o, pct:e.n?e.o/e.n*100:0});
- items.push({label: CHAPTER_NAME[ch] + " · 어려움", n:h.n, o:h.o, pct:h.n?h.o/h.n*100:0});
+/* ============================================================
+   탭 표시/숨김 (v4 핵심: CSS class .hide 로 명확히 처리)
+   ============================================================ */
+function showPanel(ch, part){
+ // 같은 챕터의 모든 패널 hide 후 선택한 것만 표시
+ document.querySelectorAll(`.partPanel[data-chap="${ch}"]`).forEach(p => p.classList.add('hide'));
+ const target = document.getElementById('panel-'+ch+'-'+part);
+ if (target) target.classList.remove('hide');
+ // 탭 active
+ const grp = document.querySelector(`.partTabs[data-chap="${ch}"]`);
+ if (grp){
+ grp.querySelectorAll('.partTab').forEach(b => b.classList.remove('active'));
+ const btn = grp.querySelector(`.partTab[data-part="${part}"]`);
+ if (btn) btn.classList.add('active');
  }
- items.sort((a,b) => a.pct - b.pct);
- let html = "<ol style='padding-left:20px;margin:0'>";
- items.slice(0,3).forEach(it => {
- if (it.n === 0) return;
- let tip = it.pct < 60 ? "🔥 가장 집중해서 복습해요!" : it.pct < 80 ? "💪 한 번 더 연습해 보면 좋아요" : "👍 좋아요!";
- html += '<li><b>' + it.label + '</b> — ' + it.o + '/' + it.n + ' (' + Math.round(it.pct) + '%) &nbsp; ' + tip + '</li>';
- });
- html += "</ol>";
- document.getElementById("weakAreas").innerHTML = html;
+ // 동적 콘텐츠
+ if (part === 'practice') loadTypeExercise(ch);
+ else if (part === 'quiz') renderQuiz(ch);
+ else if (part === 'ox') renderOX();
 }
+
+/* ============================================================
+   부트스트랩
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+ buildChapters();
+ // 탭 클릭 이벤트
+ document.querySelectorAll('.partTabs').forEach(grp => {
+ const ch = grp.dataset.chap;
+ grp.querySelectorAll('.partTab').forEach(b => b.addEventListener('click', () => showPanel(ch, b.dataset.part)));
+ });
+ // 초기 상태: 각 챕터 concept panel + 로딩 인디케이터에만 보임
+ // typeState 초기값
+ for (const ch in TYPE_EX) typeState[ch] = 0;
+ // Pyodide 로드 시작
+ ensurePy().catch(e => { const b = document.getElementById('pyLoadingBar'); if (b) b.innerHTML = '⚠️ 파이썬 로드 실패 ('+(e.message||e)+')'; });
+ refreshNav();
+});
 </script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v3d52b47920f24c319d37e2661827c42b1787588026925" integrity="sha512-d9sL6GJLXn6fInD1+TVXhTcQOsmxeHfmHAvwGDIxp5TO+uo1fiWW7mHomMj4MLRlCsJDTqXzWLHJFFlPCEIj/A==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 </body>
